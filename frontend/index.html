@@ -1071,7 +1071,7 @@
             }
 
             try {
-                const res = await fetch('http://127.0.0.1:9123/api/auth/register', {
+                const res = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, username, password })
@@ -1160,7 +1160,7 @@
             errorEl.textContent = '';
 
             try {
-                const verifyRes = await fetch('http://127.0.0.1:9123/api/auth/verify', {
+                const verifyRes = await fetch('/api/auth/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: pendingOtpEmail, otp })
@@ -1192,7 +1192,7 @@
             this.textContent = 'Sending...';
             this.style.pointerEvents = 'none';
             try {
-                const res = await fetch('http://127.0.0.1:9123/api/auth/register', {
+                const res = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: pendingOtpEmail, username: '', password: pendingOtpPassword })
@@ -1240,7 +1240,7 @@
                     return;
                 }
 
-                const res = await fetch('http://127.0.0.1:9123/api/auth/login', {
+                const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -1288,7 +1288,7 @@
 
         // Fetch and Render Turfs
         function loadTurfs(filterSport = null) {
-            fetch('http://127.0.0.1:9123/api/turfs')
+            fetch('/api/turfs')
                 .then(res => res.json())
                 .then(data => {
                     const list = document.getElementById('turf-list');
@@ -1367,7 +1367,7 @@
             document.getElementById('slots-container').innerHTML = '<div class="text-center w-100"><div class="spinner-border text-success" role="status"></div></div>';
             modal.show();
 
-            fetch(`http://127.0.0.1:9123/api/turfs/${turfId}/slots?date=${date}`)
+            fetch(`/api/turfs/${turfId}/slots?date=${date}`)
                 .then(res => res.json())
                 .then(slots => {
                     const container = document.getElementById('slots-container');
@@ -1415,7 +1415,7 @@
             if (!userId) return;
 
             // Fetch turf info to display amount
-            fetch(`http://127.0.0.1:9123/api/turfs/${currentTurfId}`)
+            fetch(`/api/turfs/${currentTurfId}`)
                 .then(res => res.json())
                 .then(turf => {
                     pendingTurfData = turf;
@@ -1467,7 +1467,7 @@
             }
 
             try {
-                const res = await fetch('http://127.0.0.1:9123/api/payment/mock-pay', {
+                const res = await fetch('/api/payment/mock-pay', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ turfId: currentTurfId, time: selectedSlot, userId: userId, date: selectedBookingDate })
@@ -1498,7 +1498,7 @@
             if (params.get('payment') === 'success') {
                 const bookingId = params.get('bookingId');
                 if (bookingId) {
-                    fetch(`http://127.0.0.1:9123/api/payment/success?bookingId=${bookingId}`)
+                    fetch(`/api/payment/success?bookingId=${bookingId}`)
                         .then(() => {
                             showToast('Payment Successful! Booking Confirmed.', 'success');
                             showSection('profile'); // Show profile/bookings
@@ -1520,7 +1520,7 @@
             const container = document.getElementById('my-bookings-list');
             container.innerHTML = '<tr><td colspan="3" class="text-center"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
 
-            fetch(`http://127.0.0.1:9123/api/turfs/bookings/user/${userId}`)
+            fetch(`/api/turfs/bookings/user/${userId}`)
                 .then(res => res.json())
                 .then(bookings => {
                     container.innerHTML = '';
