@@ -1,6 +1,9 @@
 # Maven build output
 target/
 
+# Application config with credentials - never push to GitHub
+src/main/resources/application.properties
+
 # IDE files
 .idea/
 *.iml
