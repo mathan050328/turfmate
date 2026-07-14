@@ -1,0 +1,34 @@
+# Normalize all text files to LF on commit
+* text=auto eol=lf
+
+# Java source files
+*.java text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Web files
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+
+# Scripts - Windows
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Markdown
+*.md text eol=lf
+
+# Binary files - no line ending changes
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.jar binary
+*.class binary
+*.pptx binary

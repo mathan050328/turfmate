@@ -1,0 +1,31 @@
+# Maven build output
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+*.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment & secrets
+.env
+*.env.local
+
+# Node (if any)
+node_modules/
+
+# ZIP archives
+*.zip
+
+# SQL dump (if not needed in repo)
+turf_management.sql
