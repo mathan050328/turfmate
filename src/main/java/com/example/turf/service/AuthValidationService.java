@@ -9,20 +9,15 @@ public class AuthValidationService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private static final java.util.regex.Pattern EMAIL_PATTERN = java.util.regex.Pattern.compile(
-        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
-    );
-
-    public boolean isValidEmail(String email) {
+    public boolean isValidGmail(String email) {
         if (email == null || email.isBlank()) {
             return false;
         }
-        return EMAIL_PATTERN.matcher(email.trim()).matches();
-    }
-
-    @Deprecated
-    public boolean isValidGmail(String email) {
-        return isValidEmail(email);
+        String normalized = email.trim().toLowerCase();
+        if (normalized.startsWith("@") || normalized.contains(" ")) {
+            return false;
+        }
+        return normalized.endsWith("@gmail.com");
     }
 
     public String generateOtp() {

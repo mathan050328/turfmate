@@ -1049,8 +1049,9 @@
 
         function isValidGmail(email) {
             if (!email) return false;
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
+            if (email.startsWith('@')) return false;
+            if (!email.endsWith('@gmail.com')) return false;
+            return true;
         }
 
         async function handleRegister(e) {
@@ -1061,7 +1062,7 @@
             const confirm = document.getElementById('reg-confirm').value;
 
             if (!isValidGmail(email)) {
-                showToast('Invalid email. Please enter a valid email address.', 'danger');
+                showToast('Invalid email. Cannot start with @ and must be a @gmail.com address', 'danger');
                 return;
             }
 
@@ -1071,29 +1072,18 @@
             }
 
             try {
-                const res = await fetch('/api/auth/register', {
+                const res = await fetch('http://127.0.0.1:9123/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, username, password })
                 });
 
                 if (res.ok) {
-                    const data = await res.json();
-                    showToast(data.message || 'Registration successful! Please check your email for the OTP.', 'success');
+                    showToast('Registration successful! Please check your email for the OTP.', 'success');
                     openOtpModal(email, password);
-                    if (data.otp) {
-                        setTimeout(() => {
-                            const inputs = document.querySelectorAll('#otp-inputs .otp-input');
-                            const otpStr = data.otp.toString();
-                            inputs.forEach((inp, idx) => {
-                                inp.value = otpStr[idx] || '';
-                            });
-                        }, 500);
-                    }
                 } else {
-                    const data = await res.json().catch(() => null);
-                    const errorMsg = data && data.error ? data.error : 'Registration failed';
-                    showToast(errorMsg, 'danger');
+                    const msg = await res.text();
+                    showToast(msg || 'Registration failed', 'danger');
                 }
             } catch (err) {
                 showToast('Connection error', 'danger');
@@ -1160,7 +1150,7 @@
             errorEl.textContent = '';
 
             try {
-                const verifyRes = await fetch('/api/auth/verify', {
+                const verifyRes = await fetch('http://127.0.0.1:9123/api/auth/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: pendingOtpEmail, otp })
@@ -1192,26 +1182,12 @@
             this.textContent = 'Sending...';
             this.style.pointerEvents = 'none';
             try {
-                const res = await fetch('/api/auth/register', {
+                await fetch('http://127.0.0.1:9123/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: pendingOtpEmail, username: '', password: pendingOtpPassword })
                 });
-                if (res.ok) {
-                    const data = await res.json();
-                    showToast('Verification code resent!', 'success');
-                    if (data.otp) {
-                        const inputs = document.querySelectorAll('#otp-inputs .otp-input');
-                        const otpStr = data.otp.toString();
-                        inputs.forEach((inp, idx) => {
-                            inp.value = otpStr[idx] || '';
-                        });
-                    }
-                } else {
-                    const data = await res.json().catch(() => null);
-                    const errorMsg = data && data.error ? data.error : 'Failed to resend code';
-                    showToast(errorMsg, 'danger');
-                }
+                showToast('Verification code resent!', 'success');
             } catch(err) {
                 showToast('Failed to resend code', 'danger');
             } finally {
@@ -1236,11 +1212,11 @@
                 }
 
                 if (!isValidGmail(email)) {
-                    showToast('Invalid email. Please enter a valid email address.', 'danger');
+                    showToast('Invalid email. Cannot start with @ and must be a @gmail.com address', 'danger');
                     return;
                 }
 
-                const res = await fetch('/api/auth/login', {
+                const res = await fetch('http://127.0.0.1:9123/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -1253,19 +1229,14 @@
                     showSection('turfs'); // Changed to 'turfs' as 'turf-list' is an ID within 'turfs' section
                     loadTurfs();
                     updateNavbar(true);
-                } else if (res.status === 403) {
-                    const data = await res.json().catch(() => null);
-                    showToast(data && data.error ? data.error : 'Email not verified. Please verify your email to login.', 'warning');
-                    openOtpModal(email, password);
                 } else if (res.status === 404) {
                     if (await showConfirm("Email not registered. Would you like to create a new account?", "Account Not Found")) {
                         toggleAuth('register');
                         document.getElementById('reg-email').value = email;
                     }
                 } else {
-                    const data = await res.json().catch(() => null);
-                    const errorMsg = data && data.error ? data.error : 'Login failed';
-                    showToast(errorMsg, 'danger');
+                    const msg = await res.text();
+                    showToast(msg || 'Login failed', 'danger');
                 }
             } catch (err) {
                 showToast('Connection error', 'danger');
@@ -1288,7 +1259,7 @@
 
         // Fetch and Render Turfs
         function loadTurfs(filterSport = null) {
-            fetch('/api/turfs')
+            fetch('http://127.0.0.1:9123/api/turfs')
                 .then(res => res.json())
                 .then(data => {
                     const list = document.getElementById('turf-list');
@@ -1367,7 +1338,7 @@
             document.getElementById('slots-container').innerHTML = '<div class="text-center w-100"><div class="spinner-border text-success" role="status"></div></div>';
             modal.show();
 
-            fetch(`/api/turfs/${turfId}/slots?date=${date}`)
+            fetch(`http://127.0.0.1:9123/api/turfs/${turfId}/slots?date=${date}`)
                 .then(res => res.json())
                 .then(slots => {
                     const container = document.getElementById('slots-container');
@@ -1415,7 +1386,7 @@
             if (!userId) return;
 
             // Fetch turf info to display amount
-            fetch(`/api/turfs/${currentTurfId}`)
+            fetch(`http://127.0.0.1:9123/api/turfs/${currentTurfId}`)
                 .then(res => res.json())
                 .then(turf => {
                     pendingTurfData = turf;
@@ -1467,7 +1438,7 @@
             }
 
             try {
-                const res = await fetch('/api/payment/mock-pay', {
+                const res = await fetch('http://127.0.0.1:9123/api/payment/mock-pay', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ turfId: currentTurfId, time: selectedSlot, userId: userId, date: selectedBookingDate })
@@ -1498,7 +1469,7 @@
             if (params.get('payment') === 'success') {
                 const bookingId = params.get('bookingId');
                 if (bookingId) {
-                    fetch(`/api/payment/success?bookingId=${bookingId}`)
+                    fetch(`http://127.0.0.1:9123/api/payment/success?bookingId=${bookingId}`)
                         .then(() => {
                             showToast('Payment Successful! Booking Confirmed.', 'success');
                             showSection('profile'); // Show profile/bookings
@@ -1520,7 +1491,7 @@
             const container = document.getElementById('my-bookings-list');
             container.innerHTML = '<tr><td colspan="3" class="text-center"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
 
-            fetch(`/api/turfs/bookings/user/${userId}`)
+            fetch(`http://127.0.0.1:9123/api/turfs/bookings/user/${userId}`)
                 .then(res => res.json())
                 .then(bookings => {
                     container.innerHTML = '';

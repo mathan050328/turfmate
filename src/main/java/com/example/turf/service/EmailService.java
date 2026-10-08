@@ -1,6 +1,7 @@
 package com.example.turf.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,8 +16,10 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
-    
-    private static final String FROM_EMAIL = "noreply@turfmanagement.com";
+
+    @Value("${spring.mail.username:mathankumaraiml@gmail.com}")
+    private String fromEmail;
+
     private static final String APP_NAME = "Turf Management System";
     private static final long OTP_VALIDITY_MINUTES = 10;
 
@@ -29,7 +32,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(toEmail);
-            helper.setFrom(FROM_EMAIL);
+            helper.setFrom(fromEmail);
             helper.setSubject("🔐 Verify Your " + APP_NAME + " Account");
             
             String htmlContent = buildVerificationEmailHtml(otp);
@@ -53,7 +56,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(toEmail);
-            helper.setFrom(FROM_EMAIL);
+            helper.setFrom(fromEmail);
             helper.setSubject("🔑 Reset Your " + APP_NAME + " Password");
             
             String htmlContent = buildPasswordResetEmailHtml(resetToken);
@@ -77,7 +80,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(toEmail);
-            helper.setFrom(FROM_EMAIL);
+            helper.setFrom(fromEmail);
             helper.setSubject("✅ Welcome to " + APP_NAME + "!");
             
             String htmlContent = buildWelcomeEmailHtml(username);

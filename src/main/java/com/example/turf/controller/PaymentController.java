@@ -22,6 +22,13 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * REST Controller for Payment Processing and Checkout Session Management.
+ * 
+ * Supports both Stripe Checkout integration and simulated Mock Gateway (UPI / Pay at Venue).
+ * 
+ * Endpoint Base: /api/payment
+ */
 @RestController
 @RequestMapping("/api/payment")
 @CrossOrigin(origins = "*")
@@ -31,6 +38,7 @@ public class PaymentController {
     private final BookingRepository bookingRepository;
     private final TurfRepository turfRepository;
     private final UserRepository userRepository;
+    private final com.example.turf.service.BookingService bookingService;
 
     @Value("${stripe.api.key}")
     private String stripeApiKey;
@@ -40,6 +48,9 @@ public class PaymentController {
         Stripe.apiKey = stripeApiKey;
     }
 
+    /**
+     * POST /api/payment/create-checkout-session - Stripe Checkout Session Initialization
+     */
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createCheckoutSession(@RequestBody PaymentRequest request) {
         try {
@@ -56,8 +67,7 @@ public class PaymentController {
             LocalDateTime startTime = LocalDateTime.of(bookingDate, LocalTime.of(hour, 0));
             LocalDateTime endTime = startTime.plusHours(1);
 
-            boolean alreadyBooked = !bookingRepository
-                    .findByTurfIdAndStartTimeBetween(turf.getId(), startTime, endTime.minusSeconds(1)).isEmpty();
+            boolean alreadyBooked = bookingService.isSlotBooked(turf.getId(), startTime, endTime);
             if (alreadyBooked) {
                 throw new RuntimeException("Slot is already booked");
             }
@@ -65,6 +75,7 @@ public class PaymentController {
             Booking booking = new Booking();
             booking.setTurf(turf);
             booking.setTurfId(turf.getId());
+            booking.setTurfName(turf.getName());
             booking.setUser(user);
             booking.setUserId(user.getId());
             booking.setStartTime(startTime);
@@ -113,8 +124,8 @@ public class PaymentController {
     }
 
     /**
-     * Mock payment endpoint — confirms booking directly without real Stripe keys.
-     * Use this for demo / development. Simulates a successful payment.
+     * POST /api/payment/mock-pay - Simulated Instant Payment Gateway (UPI / QR Code / Cash)
+     * Validates slot availability, saves booking as CONFIRMED and PAID, and returns receipt metadata.
      */
     @PostMapping("/mock-pay")
     public ResponseEntity<Map<String, Object>> mockPay(@RequestBody PaymentRequest request) {
@@ -133,8 +144,7 @@ public class PaymentController {
             LocalDateTime startTime = LocalDateTime.of(bookingDate, LocalTime.of(hour, 0));
             LocalDateTime endTime = startTime.plusHours(1);
 
-            boolean alreadyBooked = !bookingRepository
-                    .findByTurfIdAndStartTimeBetween(turf.getId(), startTime, endTime.minusSeconds(1)).isEmpty();
+            boolean alreadyBooked = bookingService.isSlotBooked(turf.getId(), startTime, endTime);
             if (alreadyBooked) {
                 response.put("success", false);
                 response.put("message", "This slot is already booked. Please choose another time.");
@@ -144,6 +154,7 @@ public class PaymentController {
             Booking booking = new Booking();
             booking.setTurf(turf);
             booking.setTurfId(turf.getId());
+            booking.setTurfName(turf.getName());
             booking.setUser(user);
             booking.setUserId(user.getId());
             booking.setStartTime(startTime);
@@ -166,6 +177,9 @@ public class PaymentController {
         }
     }
 
+    /**
+     * GET /api/payment/success - Webhook / Success Callback Handler
+     */
     @GetMapping("/success")
     public ResponseEntity<String> confirmBooking(@RequestParam String bookingId) {
         Booking booking = bookingRepository.findById(bookingId)

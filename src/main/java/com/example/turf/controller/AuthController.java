@@ -1,17 +1,27 @@
 package com.example.turf.controller;
 
+import com.example.turf.model.Role;
 import com.example.turf.model.User;
+import com.example.turf.repository.RoleRepository;
 import com.example.turf.repository.UserRepository;
 import com.example.turf.service.AuthValidationService;
 import com.example.turf.service.EmailService;
-import com.example.turf.service.OtpService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashMap;
-import java.util.Map;
 
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * REST Controller for User Authentication and Email Verification.
+ * 
+ * Handles User Login, Registration, and 6-Digit OTP Email Verification via SMTP.
+ * 
+ * Endpoint Base: /api/auth
+ */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -19,268 +29,104 @@ import java.util.Map;
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final EmailService emailService;
     private final AuthValidationService authValidationService;
-    private final OtpService otpService;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     /**
-     * Register endpoint: Creates user and sends OTP email
-     */
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        
-        // Validate email format
-        if (!authValidationService.isValidEmail(normalizedEmail)) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Please enter a valid email address."));
-        }
-        
-        // Validate password
-        if (request.getPassword() == null || request.getPassword().length() < 6) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Password must be at least 6 characters long."));
-        }
-        
-        // Validate username
-        if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Username is required."));
-        }
-        
-        // Check if email already registered
-        if (userRepository.existsByEmail(normalizedEmail)) {
-            User existingUser = userRepository.findByEmail(normalizedEmail).orElse(null);
-            if (existingUser != null && !existingUser.isVerified()) {
-                // Update existing user details if they register again with different info before verifying
-                existingUser.setUsername(request.getUsername().trim());
-                existingUser.setPassword(request.getPassword());
-                userRepository.save(existingUser);
-                
-                // Generate and send new OTP
-                String otp = otpService.generateOtp(normalizedEmail);
-                boolean emailSent = emailService.sendVerificationEmail(normalizedEmail, otp);
-                
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("email", normalizedEmail);
-                response.put("otpValidityMinutes", otpService.getOtpValidityInSeconds() / 60);
-                response.put("otp", otp);
-                
-                if (!emailSent) {
-                    response.put("message", "Registration updated! OTP generated locally because email delivery is unavailable. Use the code shown below to continue.");
-                    response.put("emailDeliveryAvailable", false);
-                    return ResponseEntity.ok(response);
-                }
-                
-                response.put("message", "Registration updated! Please check your email for the verification OTP.");
-                response.put("emailDeliveryAvailable", true);
-                return ResponseEntity.ok(response);
-            }
-            return ResponseEntity.status(400).body(new ErrorResponse("Email already registered. Please login or use a different email."));
-        }
-        
-        // Generate OTP
-        String otp = otpService.generateOtp(normalizedEmail);
-        
-        // Create user (not verified yet)
-        User user = new User();
-        user.setEmail(normalizedEmail);
-        user.setUsername(request.getUsername().trim());
-        user.setPassword(request.getPassword()); // Note: In production, use bcrypt
-        user.setVerified(false);
-        user.setVerificationToken(null);
-        userRepository.save(user);
-        
-        // Send verification email
-        boolean emailSent = emailService.sendVerificationEmail(normalizedEmail, otp);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("email", normalizedEmail);
-        response.put("otpValidityMinutes", otpService.getOtpValidityInSeconds() / 60);
-        response.put("otp", otp);
-        
-        if (!emailSent) {
-            response.put("message", "Registration successful! OTP generated locally because email delivery is unavailable. Use the code shown below to continue.");
-            response.put("emailDeliveryAvailable", false);
-            return ResponseEntity.ok(response);
-        }
-        
-        response.put("message", "Registration successful! Please check your email for the verification OTP.");
-        response.put("emailDeliveryAvailable", true);
-        
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Send OTP endpoint: Send OTP to email (for new registrations or password reset)
-     */
-    @PostMapping("/send-otp")
-    public ResponseEntity<?> sendOtp(@RequestBody SendOtpRequest request) {
-        String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        
-        if (!authValidationService.isValidEmail(normalizedEmail)) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Please enter a valid email address."));
-        }
-        
-        // Generate OTP
-        String otp = otpService.generateOtp(normalizedEmail);
-        
-        // Send email
-        boolean emailSent = emailService.sendVerificationEmail(normalizedEmail, otp);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("otp", otp);
-        response.put("otpValidityMinutes", otpService.getOtpValidityInSeconds() / 60);
-        
-        if (!emailSent) {
-            response.put("message", "OTP generated locally because email delivery is unavailable. Use the code shown below to continue.");
-            response.put("emailDeliveryAvailable", false);
-            return ResponseEntity.ok(response);
-        }
-        
-        response.put("message", "OTP sent to your email. Please check your inbox.");
-        response.put("emailDeliveryAvailable", true);
-        
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Verify OTP endpoint: Verify the OTP entered by user
-     */
-    @PostMapping({"/verify-otp", "/verify"})
-    public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequest request) {
-        String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        
-        if (normalizedEmail.isEmpty() || request.getOtp() == null || request.getOtp().isEmpty()) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Email and OTP are required."));
-        }
-        
-        // Verify OTP using OtpService
-        OtpService.VerifyOtpResponse otpResponse = otpService.verifyOtp(normalizedEmail, request.getOtp());
-        
-        if (!otpResponse.isSuccess()) {
-            return ResponseEntity.status(400).body(new ErrorResponse(otpResponse.getMessage()));
-        }
-        
-        // Find and update user
-        return userRepository.findByEmail(normalizedEmail)
-                .map(user -> {
-                    if (user.isVerified()) {
-                        return ResponseEntity.ok(new SuccessResponse("Email already verified. You can now login."));
-                    }
-                    
-                    // Mark user as verified
-                    user.setVerified(true);
-                    user.setVerificationToken(null);
-                    userRepository.save(user);
-                    
-                    // Send welcome email
-                    emailService.sendWelcomeEmail(user.getEmail(), user.getUsername());
-                    
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("success", true);
-                    response.put("message", "Email verified successfully! You can now login.");
-                    response.put("email", normalizedEmail);
-                    
-                    return ResponseEntity.ok(response);
-                })
-                .orElse(ResponseEntity.status(404).body(new ErrorResponse("Email not registered. Please sign up first.")));
-    }
-
-    /**
-     * Resend OTP endpoint
-     */
-    @PostMapping("/resend-otp")
-    public ResponseEntity<?> resendOtp(@RequestBody SendOtpRequest request) {
-        String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        
-        if (!authValidationService.isValidEmail(normalizedEmail)) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Please enter a valid email address."));
-        }
-        
-        // Check if user exists
-        if (!userRepository.existsByEmail(normalizedEmail)) {
-            return ResponseEntity.status(404).body(new ErrorResponse("Email not registered."));
-        }
-        
-        // Check if already verified
-        User user = userRepository.findByEmail(normalizedEmail).get();
-        if (user.isVerified()) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Email already verified. Please login."));
-        }
-        
-        // Generate and send new OTP
-        String otp = otpService.generateOtp(normalizedEmail);
-        boolean emailSent = emailService.sendVerificationEmail(normalizedEmail, otp);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("otp", otp);
-        response.put("otpValidityMinutes", otpService.getOtpValidityInSeconds() / 60);
-        
-        if (!emailSent) {
-            response.put("message", "New OTP generated locally because email delivery is unavailable. Use the code shown below to continue.");
-            response.put("emailDeliveryAvailable", false);
-            return ResponseEntity.ok(response);
-        }
-        
-        response.put("message", "New OTP sent to your email.");
-        response.put("emailDeliveryAvailable", true);
-        
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Login endpoint: Only allows login if email is verified
+     * POST /api/auth/login - Authenticate user credentials and return profile metadata
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        
-        if (!authValidationService.isValidEmail(normalizedEmail)) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Please enter a valid email address."));
+        if (!authValidationService.isValidGmail(normalizedEmail)) {
+            return ResponseEntity.status(400).body(Map.of("success", false, "error", "Please enter a valid Gmail address."));
         }
         
         return userRepository.findByEmail(normalizedEmail)
                 .map(user -> {
                     if (!user.isVerified()) {
-                        return ResponseEntity.status(403).body(new ErrorResponse("Email not verified. Please verify your email to login."));
+                        return ResponseEntity.status(403).body((Object) Map.of("success", false, "error", "Please verify your email before logging in."));
                     }
-                    if (user.getPassword().equals(request.getPassword())) {
-                        Map<String, Object> response = new HashMap<>();
-                        response.put("success", true);
-                        response.put("message", "Login successful!");
-                        response.put("user", new AuthResponse(user.getId(), user.getEmail(), user.getUsername()));
-                        return ResponseEntity.ok(response);
+                    boolean isPasswordValid = passwordEncoder.matches(request.getPassword(), user.getPassword()) 
+                            || user.getPassword().equals(request.getPassword());
+                    if (isPasswordValid) {
+                        boolean isAdmin = user.getRoles() != null && user.getRoles().stream()
+                                .anyMatch(r -> "ROLE_ADMIN".equalsIgnoreCase(r.getName()));
+                        return ResponseEntity.ok((Object) new AuthResponse(user.getId(), user.getEmail(), user.getUsername(), isAdmin));
                     } else {
-                        return ResponseEntity.status(401).body(new ErrorResponse("Invalid password."));
+                        return ResponseEntity.status(401).body((Object) Map.of("success", false, "error", "Invalid email or password"));
                     }
                 })
-                .orElse(ResponseEntity.status(404).body(new ErrorResponse("Email not registered. Please sign up.")));
+                .orElse(ResponseEntity.status(404).body(Map.of("success", false, "error", "Email not registered. Would you like to create an account?")));
     }
 
     /**
-     * Check verification status
+     * POST /api/auth/register - Create pending user account and send 6-digit verification OTP
      */
-    @PostMapping("/check-verification")
-    public ResponseEntity<?> checkVerification(@RequestBody EmailCheckRequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
-        
-        if (normalizedEmail.isEmpty()) {
-            return ResponseEntity.status(400).body(new ErrorResponse("Email is required."));
+        if (!authValidationService.isValidGmail(normalizedEmail)) {
+            return ResponseEntity.status(400).body(Map.of("success", false, "error", "Please enter a valid Gmail address."));
         }
         
+        if (userRepository.existsByEmail(normalizedEmail)) {
+            return ResponseEntity.status(400).body(Map.of("success", false, "error", "Email already in use"));
+        }
+        
+        String otp = authValidationService.generateOtp();
+        
+        User user = new User();
+        user.setEmail(normalizedEmail);
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword())); // BCrypt Hashed Password
+        user.setVerified(false);
+        user.setVerificationToken(otp);
+
+        Role userRole = roleRepository.findByName("ROLE_USER").orElse(null);
+        if (userRole != null) {
+            user.setRoles(Set.of(userRole));
+        }
+
+        userRepository.save(user);
+        
+        boolean emailSent = false;
+        try {
+            emailSent = emailService.sendVerificationEmail(user.getEmail(), otp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        Map<String, Object> resp = new java.util.HashMap<>();
+        resp.put("success", true);
+        resp.put("message", emailSent ? "User registered successfully. Please check your email for the verification OTP." : "User registered! Verification code: " + otp);
+        resp.put("otp", otp);
+        return ResponseEntity.ok(resp);
+    }
+    
+    /**
+     * POST /api/auth/verify - Verify 6-digit OTP code to activate user account
+     */
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyEmail(@RequestBody VerifyRequest request) {
+        String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
         return userRepository.findByEmail(normalizedEmail)
                 .map(user -> {
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("verified", user.isVerified());
-                    response.put("email", normalizedEmail);
-                    return ResponseEntity.ok((Object) response);
-                })
-                .orElse(ResponseEntity.status(404).body((Object) new ErrorResponse("Email not registered.")));
+                    if (user.isVerified()) {
+                        return ResponseEntity.ok(Map.of("success", true, "message", "Email already verified."));
+                    }
+                    if (user.getVerificationToken() != null && user.getVerificationToken().equals(request.getOtp())) {
+                        user.setVerified(true);
+                        user.setVerificationToken(null);
+                        userRepository.save(user);
+                        return ResponseEntity.ok(Map.of("success", true, "message", "Email verified successfully. You can now login."));
+                    } else {
+                        return ResponseEntity.status(400).body(Map.of("success", false, "error", "Invalid verification code."));
+                    }
+                }).orElse(ResponseEntity.status(404).body(Map.of("success", false, "error", "Email not registered.")));
     }
-
-    // ==================== Request/Response Classes ====================
 
     @Data
     static class LoginRequest {
@@ -296,19 +142,9 @@ public class AuthController {
     }
     
     @Data
-    static class SendOtpRequest {
-        private String email;
-    }
-    
-    @Data
-    static class VerifyOtpRequest {
+    static class VerifyRequest {
         private String email;
         private String otp;
-    }
-    
-    @Data
-    static class EmailCheckRequest {
-        private String email;
     }
 
     @Data
@@ -317,29 +153,7 @@ public class AuthController {
         private String id;
         private String email;
         private String username;
-    }
-    
-    @Data
-    @AllArgsConstructor
-    static class ErrorResponse {
-        private String error;
-        private boolean success;
-        
-        public ErrorResponse(String error) {
-            this.error = error;
-            this.success = false;
-        }
-    }
-    
-    @Data
-    @AllArgsConstructor
-    static class SuccessResponse {
-        private String message;
-        private boolean success;
-        
-        public SuccessResponse(String message) {
-            this.message = message;
-            this.success = true;
-        }
+        @JsonProperty("isAdmin")
+        private boolean isAdmin;
     }
 }

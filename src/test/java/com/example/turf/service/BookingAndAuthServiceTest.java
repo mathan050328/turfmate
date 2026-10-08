@@ -13,20 +13,16 @@ class BookingAndAuthServiceTest {
     private final BookingService bookingService = new BookingService(null);
 
     @Test
-    void shouldAcceptValidEmailAddresses() {
-        assertTrue(authValidationService.isValidEmail("user@gmail.com"));
-        assertTrue(authValidationService.isValidEmail("demo123@gmail.com"));
-        assertTrue(authValidationService.isValidEmail("user@yahoo.com"));
-        assertTrue(authValidationService.isValidEmail("info@domain.co.uk"));
+    void shouldAcceptValidGmailAddresses() {
+        assertTrue(authValidationService.isValidGmail("user@gmail.com"));
+        assertTrue(authValidationService.isValidGmail("demo123@gmail.com"));
     }
 
     @Test
-    void shouldRejectInvalidEmailAddresses() {
-        assertFalse(authValidationService.isValidEmail("@gmail.com"));
-        assertFalse(authValidationService.isValidEmail("user@"));
-        assertFalse(authValidationService.isValidEmail("user@domain."));
-        assertFalse(authValidationService.isValidEmail(""));
-        assertFalse(authValidationService.isValidEmail(null));
+    void shouldRejectInvalidGmailAddresses() {
+        assertFalse(authValidationService.isValidGmail("@gmail.com"));
+        assertFalse(authValidationService.isValidGmail("user@yahoo.com"));
+        assertFalse(authValidationService.isValidGmail(""));
     }
 
     @Test

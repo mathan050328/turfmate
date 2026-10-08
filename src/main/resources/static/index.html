@@ -581,26 +581,191 @@
             font-size: 1.3rem;
             color: var(--text-muted);
         }
+
+        /* ── Card Visual Preview ── */
+        .card-visual {
+            width: 100%;
+            height: 175px;
+            background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 50%, #1a1f3a 100%);
+            border-radius: 16px;
+            padding: 20px 24px;
+            position: relative;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .card-visual::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .card-visual::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -20px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(0,255,136,0.05);
+        }
+        .card-visual-chip {
+            width: 40px; height: 30px;
+            background: linear-gradient(135deg, #e0b84b, #c8952a);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .card-visual-chip::after {
+            content: '';
+            width: 24px; height: 18px;
+            border: 1.5px solid rgba(0,0,0,0.3);
+            border-radius: 3px;
+        }
+        .card-visual-number {
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+        .card-visual-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .card-visual-label {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .card-visual-name {
+            font-size: 0.85rem;
+            color: #fff;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .card-visual-expiry {
+            font-size: 0.9rem;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+        .card-visual-brand {
+            font-size: 1.1rem;
+            font-weight: 900;
+            font-style: italic;
+        }
+        .brand-visa { color: #fff; letter-spacing: -1px; }
+        .brand-mc { color: #f79e1b; }
+        .brand-rupay { color: #44b8e0; font-style: normal; font-size: 0.9rem; }
+        .brand-generic { color: rgba(255,255,255,0.4); font-style: normal; font-size: 0.75rem; }
+
+        /* ── Processing Overlay ── */
+        #payment-processing {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(10,15,30,0.97);
+            border-radius: 16px;
+            z-index: 10;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+        }
+        .proc-spinner {
+            width: 64px; height: 64px;
+            border: 4px solid rgba(0,255,136,0.15);
+            border-top-color: var(--primary-color, #00ff88);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .proc-text { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+
+        /* ── Success Screen ── */
+        #payment-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        .success-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(0,255,136,0.1);
+            border: 3px solid #00ff88;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem;
+            color: #00ff88;
+            margin-bottom: 1.2rem;
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .success-booking-ref {
+            background: rgba(0,255,136,0.08);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin: 1rem 0;
+            width: 100%;
+        }
+        .success-booking-ref strong {
+            display: block;
+            color: #00ff88;
+            font-size: 0.95rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        .success-detail-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.85rem;
+        }
+        .success-detail-row span:first-child { color: rgba(255,255,255,0.5); }
+        .success-detail-row span:last-child { color: #fff; font-weight: 600; }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#" onclick="showSection('home')">TURF<span>MATE</span></a>
+            <a class="navbar-brand" href="javascript:void(0)" onclick="showSection('home')">TURF<span>MATE</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('home')">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('turfs')">Browse Turfs</a>
+                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0)" onclick="showSection('home')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="showSection('turfs')">Browse Turfs</a>
                     </li>
-                    <li class="nav-item" id="nav-profile" style="display: none;"><a class="nav-link" href="#"
+                    <li class="nav-item" id="nav-profile" style="display: none;"><a class="nav-link" href="javascript:void(0)"
                             onclick="showSection('profile')">My Bookings</a></li>
-                    <li class="nav-item" id="nav-login"><a class="nav-link" href="#"
+                    <li class="nav-item" id="nav-admin" style="display: none;"><a class="nav-link" href="admin.html" target="_blank"
+                            style="color: var(--primary); font-weight: 600;">⚙ Admin</a></li>
+                    <li class="nav-item" id="nav-login"><a class="nav-link" href="javascript:void(0)"
                             onclick="showSection('login')">Login</a></li>
-                    <li class="nav-item" id="nav-logout" style="display: none;"><a class="nav-link" href="#"
+                    <li class="nav-item" id="nav-logout" style="display: none;"><a class="nav-link" href="javascript:void(0)"
                             onclick="handleLogout()">Logout</a></li>
                 </ul>
             </div>
@@ -668,16 +833,17 @@
             <div class="d-flex justify-content-between align-items-center mb-5">
                 <h2 class="section-title mb-0">Available Turfs</h2>
                 <div class="dropdown">
-                    <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Filter by Sport
+                    <button class="btn btn-outline-success dropdown-toggle fw-bold px-3 py-2" type="button" id="filter-dropdown-btn" data-bs-toggle="dropdown">
+                        <i class="bi bi-funnel me-1"></i> Filter by Sport
                     </button>
-                    <ul class="dropdown-menu" style="background: var(--bg-color); border: 1px solid var(--glass-border);">
-                        <li><a class="dropdown-item fw-bold text-primary" href="#" onclick="loadTurfs()"><i
-                                    class="bi bi-grid-fill me-2"></i>All Sports</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="loadTurfs('Football')">Football</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="loadTurfs('Cricket')">Cricket</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="loadTurfs('Tennis')">Tennis</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="loadTurfs('Basketball')">Basketball</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="background: rgba(18, 22, 41, 0.95); border: 1px solid rgba(0, 255, 136, 0.3);">
+                        <li><a class="dropdown-item fw-bold text-success" href="javascript:void(0)" onclick="loadTurfs()"><i class="bi bi-grid-fill me-2"></i>All Sports</a></li>
+                        <li><hr class="dropdown-divider border-secondary"></li>
+                        <li><a class="dropdown-item text-light opacity-75" href="javascript:void(0)" onclick="loadTurfs('Football')"><i class="bi bi-dribbble me-2"></i>Football</a></li>
+                        <li><a class="dropdown-item text-light opacity-75" href="javascript:void(0)" onclick="loadTurfs('Cricket')"><i class="bi bi-trophy me-2"></i>Cricket</a></li>
+                        <li><a class="dropdown-item text-light opacity-75" href="javascript:void(0)" onclick="loadTurfs('Badminton')"><i class="bi bi-activity me-2"></i>Badminton</a></li>
+                        <li><a class="dropdown-item text-light opacity-75" href="javascript:void(0)" onclick="loadTurfs('Tennis')"><i class="bi bi-circle me-2"></i>Tennis</a></li>
+                        <li><a class="dropdown-item text-light opacity-75" href="javascript:void(0)" onclick="loadTurfs('Basketball')"><i class="bi bi-record-circle me-2"></i>Basketball</a></li>
                     </ul>
                 </div>
             </div>
@@ -725,8 +891,13 @@
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">Password</label>
-                                        <input type="password" class="form-control form-control-lg"
-                                            placeholder="••••••••" required>
+                                        <div class="input-group">
+                                            <input type="password" id="login-password" class="form-control form-control-lg"
+                                                placeholder="••••••••" required style="border-right: none;">
+                                            <button class="btn btn-outline-secondary px-3" type="button" onclick="togglePasswordVisibility('login-password', 'login-eye-icon')" style="border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: var(--primary-color);" title="Toggle password visibility">
+                                                <i class="bi bi-eye-fill" id="login-eye-icon"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn hero-btn w-100 py-3 mt-3">Sign In</button>
                                     <div class="text-center mt-4">
@@ -750,13 +921,23 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Password</label>
-                                        <input type="password" id="reg-password" class="form-control"
-                                            placeholder="Create password" required>
+                                        <div class="input-group">
+                                            <input type="password" id="reg-password" class="form-control"
+                                                placeholder="Create password" required style="border-right: none;">
+                                            <button class="btn btn-outline-secondary px-3" type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye-icon')" style="border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: var(--primary-color);" title="Toggle password visibility">
+                                                <i class="bi bi-eye-fill" id="reg-eye-icon"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Confirm Password</label>
-                                        <input type="password" id="reg-confirm" class="form-control"
-                                            placeholder="Confirm password" required>
+                                        <div class="input-group">
+                                            <input type="password" id="reg-confirm" class="form-control"
+                                                placeholder="Confirm password" required style="border-right: none;">
+                                            <button class="btn btn-outline-secondary px-3" type="button" onclick="togglePasswordVisibility('reg-confirm', 'reg-confirm-eye-icon')" style="border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: var(--primary-color);" title="Toggle password visibility">
+                                                <i class="bi bi-eye-fill" id="reg-confirm-eye-icon"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn hero-btn w-100 py-3">Create Account</button>
                                 </form>
@@ -790,13 +971,13 @@
                         <div class="card-body p-4">
                             <h5 class="fw-bold mb-4" style="color:#fff;">My Bookings History</h5>
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light">
+                                <table class="table table-dark table-hover align-middle mb-0" style="background: transparent; color: #fff;">
+                                    <thead style="background: rgba(255,255,255,0.06);">
                                         <tr>
-                                            <th>Turf Name</th>
-                                            <th>Date & Time</th>
-                                            <th>Booking</th>
-                                            <th>Payment</th>
+                                            <th style="color: var(--primary-color); font-weight: 700;">Turf Name</th>
+                                            <th style="color: var(--primary-color); font-weight: 700;">Date & Time</th>
+                                            <th style="color: var(--primary-color); font-weight: 700;">Booking</th>
+                                            <th style="color: var(--primary-color); font-weight: 700;">Payment</th>
                                         </tr>
                                     </thead>
                                     <tbody id="my-bookings-list">
@@ -821,16 +1002,16 @@
                 <div class="col-md-2 ms-auto mb-4">
                     <h5 class="footer-title">Links</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-light opacity-50">Home</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-light opacity-50">About</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-light opacity-50">Contact</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="showSection('home')" class="text-decoration-none text-light opacity-75"><i class="bi bi-house-door me-1"></i> Home</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('about')" class="text-decoration-none text-light opacity-75"><i class="bi bi-info-circle me-1"></i> About</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('contact')" class="text-decoration-none text-light opacity-75"><i class="bi bi-envelope me-1"></i> Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">
                     <h5 class="footer-title">Legal</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-light opacity-50">Privacy</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-light opacity-50">Terms</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('privacy')" class="text-decoration-none text-light opacity-75"><i class="bi bi-shield-check me-1"></i> Privacy Policy</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('terms')" class="text-decoration-none text-light opacity-75"><i class="bi bi-file-text me-1"></i> Terms of Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -839,6 +1020,180 @@
             </div>
         </div>
     </footer>
+
+    <!-- About Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
+                <div class="modal-header border-bottom border-secondary px-4 py-3">
+                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-info-circle-fill me-2"></i> About TurfMate</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle p-3 me-3 text-center" style="width:60px; height:60px; background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.3);">
+                            <i class="bi bi-trophy-fill fs-3" style="color: var(--primary-color);"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">Premier Sports Venue Booking</h4>
+                            <p class="text-muted small mb-0">Empowering athletes and sports enthusiasts to book grounds effortlessly.</p>
+                        </div>
+                    </div>
+
+                    <p class="opacity-80 leading-relaxed mb-4">TurfMate is a next-generation Sports Management System built for seamless discovery and reservation of top-tier football, cricket, tennis, and badminton turfs. Powered by real-time slot scheduling and automated OTP security, we eliminate double-booking friction entirely.</p>
+                    
+                    <div class="row g-3 my-2">
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-lightning-charge-fill text-warning fs-3 mb-2"></i>
+                                <h6 class="fw-bold mb-1">Instant Slot Lock</h6>
+                                <p class="small text-muted mb-0">60-second reservation with live schedule syncing.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-shield-check text-success fs-3 mb-2"></i>
+                                <h6 class="fw-bold mb-1">Verified Security</h6>
+                                <p class="small text-muted mb-0">Gmail SMTP integration for real verification code delivery.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-credit-card-2-front-fill text-info fs-3 mb-2"></i>
+                                <h6 class="fw-bold mb-1">Multi-Payment Support</h6>
+                                <p class="small text-muted mb-0">UPI, QR Code, Card, and Pay-at-Turf options.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-secondary px-4 py-3 d-flex justify-content-between">
+                    <span class="small text-muted">Version 1.0.0 &bull; Spring Boot & MongoDB</span>
+                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="modal fade" id="contactModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
+                <div class="modal-header border-bottom border-secondary px-4 py-3">
+                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-headset me-2"></i> Contact & Support</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold mb-2">Get in Touch with TurfMate Support</h4>
+                        <p class="text-muted small mb-0">Have questions about venue bookings, ground availability, or admin support? We are available 24/7.</p>
+                    </div>
+
+                    <div class="row g-3 my-2">
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 text-center h-100" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:56px; height:56px; background: rgba(0,255,136,0.15); color:var(--primary-color);">
+                                    <i class="bi bi-geo-alt-fill fs-4"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">Headquarters Location</h6>
+                                <p class="small text-muted mb-0 leading-relaxed">Ondipudur, Coimbatore,<br>Tamil Nadu, India - 641016</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 text-center h-100" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:56px; height:56px; background: rgba(0,255,136,0.15); color:var(--primary-color);">
+                                    <i class="bi bi-telephone-fill fs-4"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">Helpline Support</h6>
+                                <p class="small text-muted mb-1">Direct Call & WhatsApp:</p>
+                                <div class="fw-bold text-white fs-6">+91 79049 77500</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 text-center h-100" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:56px; height:56px; background: rgba(0,255,136,0.15); color:var(--primary-color);">
+                                    <i class="bi bi-envelope-check-fill fs-4"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">Official Email</h6>
+                                <p class="small text-muted mb-1">Admin & Support Inquiry:</p>
+                                <div class="fw-bold text-white small" style="word-break: break-all;">mathanadmin@gmail.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-secondary px-4 py-3">
+                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
+                <div class="modal-header border-bottom border-secondary px-4 py-3">
+                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-shield-check me-2"></i> Privacy Policy</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" style="max-height: 450px; overflow-y: auto;">
+                    <div class="p-3 mb-4 rounded-3" style="background: rgba(0,255,136,0.08); border-left: 4px solid var(--primary-color);">
+                        <div class="fw-bold mb-1"><i class="bi bi-lock-fill me-1"></i> Your Privacy Rights</div>
+                        <div class="small text-muted">We respect your data privacy and ensure industry-standard encryption for all transactions.</div>
+                    </div>
+
+                    <h5 class="fw-bold mb-2">1. Information We Collect</h5>
+                    <p class="small text-muted mb-3 leading-relaxed">When registering or reserving a slot on TurfMate, we collect your username, email address, and booking details. Passwords are stored securely in database format.</p>
+
+                    <h5 class="fw-bold mb-2">2. Data Usage & Security</h5>
+                    <p class="small text-muted mb-3 leading-relaxed">Your email is strictly used for 6-digit OTP verification codes and booking confirmations. We never sell or share user data with third-party advertisers.</p>
+
+                    <h5 class="fw-bold mb-2">3. Payment Privacy</h5>
+                    <p class="small text-muted mb-3 leading-relaxed">All payment transactions (UPI, QR Code, Card) are transmitted over TLS 1.3 encrypted connections. Financial credentials like UPI PINs are never stored on our servers.</p>
+
+                    <h5 class="fw-bold mb-2">4. Managing Your Data</h5>
+                    <p class="small text-muted mb-0 leading-relaxed">You can inspect your complete booking history anytime under "My Bookings" or contact mathanadmin@gmail.com for data removal requests.</p>
+                </div>
+                <div class="modal-footer border-top border-secondary px-4 py-3">
+                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
+                <div class="modal-header border-bottom border-secondary px-4 py-3">
+                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-file-text-fill me-2"></i> Terms of Service</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" style="max-height: 450px; overflow-y: auto;">
+                    <div class="p-3 mb-4 rounded-3" style="background: rgba(255,193,7,0.08); border-left: 4px solid #ffc107;">
+                        <div class="fw-bold mb-1" style="color: #ffc107;"><i class="bi bi-exclamation-triangle-fill me-1"></i> Venue Rules & Conduct</div>
+                        <div class="small text-muted">All players must adhere to venue guidelines and footwear requirements during their booked slots.</div>
+                    </div>
+
+                    <h5 class="fw-bold mb-2">1. Slot Reservation & Timings</h5>
+                    <p class="small text-muted mb-3 leading-relaxed">Bookings are valid strictly for the 1-hour slot and date selected. Players are advised to arrive 10 minutes prior to slot start time.</p>
+
+                    <h5 class="fw-bold mb-2">2. Footwear & Turf Maintenance</h5>
+                    <p class="small text-muted mb-3 leading-relaxed">Players must wear non-marking sports shoes or turf sneakers. Metal studs, cleats, food, and drinks are strictly prohibited on synthetic grass surfaces.</p>
+
+                    <h5 class="fw-bold mb-2">3. Cancellation & Refund Policy</h5>
+                    <p class="small text-muted mb-3 leading-relaxed">Cancellations requested at least 2 hours prior to the slot start time qualify for a full refund or slot rescheduling. Late cancellations are non-refundable.</p>
+
+                    <h5 class="fw-bold mb-2">4. Account Responsibilities</h5>
+                    <p class="small text-muted mb-0 leading-relaxed">TurfMate reserves the right to suspend accounts engaged in fraudulent activity, double-booking exploitation, or property damage.</p>
+                </div>
+                <div class="modal-footer border-top border-secondary px-4 py-3">
+                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Booking Modal -->
     <div class="modal fade" id="bookingModal" tabindex="-1">
@@ -853,6 +1208,11 @@
                     <div class="mb-3">
                         <label for="booking-date" class="form-label">Select Date</label>
                         <input type="date" id="booking-date" class="form-control" value="">
+                        <div class="mt-2 d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-success" onclick="quickDate(0)">Today</button>
+                            <button type="button" class="btn btn-sm btn-outline-success" onclick="quickDate(1)">Tomorrow</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="quickDate(2)">Day After</button>
+                        </div>
                     </div>
                     <h6 class="fw-bold mb-3">Available Slots</h6>
                     <div id="slots-container" class="row g-2">
@@ -889,16 +1249,25 @@
     <!-- Payment Modal -->
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content payment-modal-content">
+            <div class="modal-content payment-modal-content" style="position:relative; overflow:hidden;">
+
+                <!-- Processing Overlay -->
+                <div id="payment-processing">
+                    <div class="proc-spinner"></div>
+                    <div class="proc-text" id="proc-text">Processing Payment...</div>
+                </div>
+
                 <div class="modal-header payment-modal-header">
                     <h5 class="modal-title fw-bold" id="paymentModalLabel">
                         <i class="bi bi-credit-card-2-front me-2"></i>Secure Payment
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body p-4">
-                    <!-- Booking Summary -->
-                    <div class="payment-summary-box">
+
+                    <!-- Booking Summary Strip -->
+                    <div class="payment-summary-box mb-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <div class="small opacity-75 mb-1">Booking Summary</div>
@@ -912,46 +1281,102 @@
                         </div>
                     </div>
 
-                    <!-- Card Form -->
-                    <form id="payment-form" autocomplete="off">
-                        <div class="card-input-group">
-                            <label>Card Number</label>
-                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456"
-                                maxlength="19" inputmode="numeric" required>
-                            <span class="card-icon"><span class="card-chip"></span></span>
-                        </div>
-                        <div class="card-input-group">
-                            <label>Cardholder Name</label>
-                            <input type="text" id="card-name" placeholder="Name on card" required>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-6">
-                                <div class="card-input-group mb-0">
-                                    <label>Expiry Date</label>
-                                    <input type="text" id="card-expiry" placeholder="MM / YY"
-                                        maxlength="7" required>
+                    <!-- Payment Form / Options -->
+                    <div id="payment-form-wrap">
+                        <!-- Payment Method Tabs -->
+                        <ul class="nav nav-pills nav-justified mb-3" id="paymentTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active py-2" id="upi-tab" data-bs-toggle="pill" data-bs-target="#upi-pay" type="button" role="tab">
+                                    <i class="bi bi-qr-code-scan me-1"></i> UPI / QR Code
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2" id="cash-tab" data-bs-toggle="pill" data-bs-target="#cash-pay" type="button" role="tab">
+                                    <i class="bi bi-cash-stack me-1"></i> Pay at Turf
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="paymentTabContent">
+                            <!-- UPI / QR Code Pay -->
+                            <div class="tab-pane fade show active" id="upi-pay" role="tabpanel">
+                                <div class="text-center p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(0,255,136,0.3);">
+                                    <div class="d-flex justify-content-center align-items-center gap-3 mb-2">
+                                        <span class="badge bg-primary px-2 py-1">GPay</span>
+                                        <span class="badge bg-purple px-2 py-1" style="background:#5f259f">PhonePe</span>
+                                        <span class="badge bg-info text-dark px-2 py-1">Paytm</span>
+                                        <span class="badge bg-success px-2 py-1">BHIM UPI</span>
+                                    </div>
+                                    
+                                    <!-- QR Code Graphic -->
+                                    <div class="my-3 d-inline-block p-2 bg-white rounded shadow-sm">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=turfmate@upi%26pn=TurfMate%26am=500" alt="UPI QR Code" style="width: 130px; height: 130px;">
+                                    </div>
+                                    
+                                    <div class="small opacity-75 mb-2">Scan QR Code or enter your UPI ID</div>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-white border-secondary"><i class="bi bi-person-badge"></i></span>
+                                        <input type="text" id="upi-id-input" class="form-control bg-dark text-white border-secondary" placeholder="yourname@upi" value="demo@upi">
+                                    </div>
+
+                                    <button type="button" class="btn hero-btn w-100 py-2" id="pay-upi-btn" onclick="submitMockPayment('UPI')">
+                                        <i class="bi bi-lightning-charge-fill me-2"></i>Pay via UPI & Confirm
+                                    </button>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="card-input-group mb-0">
-                                    <label>CVV</label>
-                                    <input type="password" id="card-cvv" placeholder="•••"
-                                        maxlength="4" inputmode="numeric" required>
+
+                            <!-- Pay at Venue -->
+                            <div class="tab-pane fade" id="cash-pay" role="tabpanel">
+                                <div class="text-center p-4 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);">
+                                    <i class="bi bi-geo-alt-fill text-warning display-4 mb-2"></i>
+                                    <h6 class="fw-bold">Pay Cash at Venue</h6>
+                                    <p class="small opacity-75 mb-4">Reserve slot now & pay directly at the turf counter when you arrive.</p>
+                                    <button type="button" class="btn btn-warning w-100 py-2 fw-bold" id="pay-cash-btn" onclick="submitMockPayment('Cash')">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Reserve & Pay at Turf
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" id="pay-now-btn">
-                            <i class="bi bi-shield-lock-fill me-2"></i>Pay Now
+
+                        <div class="secure-badge mt-3 text-center small opacity-75">
+                            <i class="bi bi-shield-check me-1"></i>Instant Booking Confirmation &nbsp;|&nbsp;
+                            <i class="bi bi-lock me-1"></i>No Card Needed
+                        </div>
+                    </div>
+
+                    <!-- Success Screen (hidden by default) -->
+                    <div id="payment-success">
+                        <div class="success-circle">✓</div>
+                        <h5 class="fw-bold mb-1">Payment Successful!</h5>
+                        <p class="small opacity-75 mb-0">Your slot has been confirmed</p>
+                        <div class="success-booking-ref">
+                            Booking Reference
+                            <strong id="success-ref-id">—</strong>
+                        </div>
+                        <div style="width:100%">
+                            <div class="success-detail-row">
+                                <span>Turf</span><span id="success-turf"></span>
+                            </div>
+                            <div class="success-detail-row">
+                                <span>Date</span><span id="success-date"></span>
+                            </div>
+                            <div class="success-detail-row">
+                                <span>Slot</span><span id="success-slot"></span>
+                            </div>
+                            <div class="success-detail-row" style="border:none;">
+                                <span>Amount Paid</span><span id="success-amount" style="color:#00ff88;"></span>
+                            </div>
+                        </div>
+                        <button class="btn hero-btn w-100 mt-4" onclick="goToBookings()">
+                            <i class="bi bi-calendar-check me-2"></i>View My Bookings
                         </button>
-                        <div class="secure-badge">
-                            <i class="bi bi-shield-check me-1"></i>256-bit SSL secured &nbsp;|&nbsp;
-                            <i class="bi bi-lock me-1"></i>Your payment info is safe
-                        </div>
-                    </form>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- OTP Verification Modal -->
     <div class="modal fade" id="otpModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -995,34 +1420,64 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function showSection(id) {
+        function showSection(id, updatePath = true) {
+            if (id === 'bookings') id = 'profile';
+            if (!id || id === '/') id = 'home';
+
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+            } else {
+                // Fallback if target section ID doesn't exist
+                document.getElementById('home').classList.add('active');
+                id = 'home';
+            }
 
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            // Add active class to the current section's nav link, if it exists
-            const navLink = document.querySelector(`.nav-item a[onclick="showSection('${id}')"]`);
+            const navLink = document.querySelector(`.nav-item a[onclick*="'${id}'"]`);
             if (navLink) {
                 navLink.classList.add('active');
             }
-            updateNavbar(); // Update navbar state on section change
+            updateNavbar();
+
             if (id === 'profile') {
                 loadMyBookings();
+            } else if (id === 'turfs') {
+                loadTurfs();
+            }
+
+            // Always scroll smoothly to top so content is never hidden/stuck
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (updatePath) {
+                const routeName = id === 'profile' ? 'bookings' : id;
+                window.history.pushState({ section: id }, '', '/' + routeName);
             }
         }
 
+        window.addEventListener('popstate', function () {
+            const path = window.location.pathname.replace(/^\//, '') || 'home';
+            showSection(path, false);
+        });
+
         function updateNavbar() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (user) {
+            const stored = JSON.parse(localStorage.getItem('user'));
+            const user = stored ? (stored.user || stored) : null;
+            if (user && user.id) {
                 document.getElementById('nav-login').style.display = 'none';
                 document.getElementById('nav-logout').style.display = 'block';
                 document.getElementById('nav-profile').style.display = 'block';
-                document.getElementById('profile-username').innerText = user.username;
-                document.getElementById('profile-email').innerText = user.email;
+                document.getElementById('profile-username').innerText = user.username || '';
+                document.getElementById('profile-email').innerText = user.email || '';
+                
+                const isAdmin = stored.isAdmin || (stored.user && stored.user.isAdmin);
+                document.getElementById('nav-admin').style.display = isAdmin ? 'block' : 'none';
             } else {
                 document.getElementById('nav-login').style.display = 'block';
                 document.getElementById('nav-logout').style.display = 'none';
                 document.getElementById('nav-profile').style.display = 'none';
+                document.getElementById('nav-admin').style.display = 'none';
             }
         }
 
@@ -1220,12 +1675,25 @@
             }
         });
 
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash-fill';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye-fill';
+            }
+        }
+
         async function handleLogin(e) {
             e.preventDefault(); // Prevent default form submission
             try {
                 const loginForm = e.target;
                 const emailInput = loginForm.querySelector('input[type="email"]');
-                const passInput = loginForm.querySelector('input[type="password"]');
+                const passInput = document.getElementById('login-password') || loginForm.querySelector('input[type="password"]') || loginForm.querySelector('input[type="text"]');
 
                 const email = emailInput ? emailInput.value : '';
                 const password = passInput ? passInput.value : '';
@@ -1247,12 +1715,13 @@
                 });
 
                 if (res.ok) {
-                    const user = await res.json();
+                    const data = await res.json();
+                    const user = data.user || data; // backend returns {success, message, user:{id,email,username}}
                     localStorage.setItem('user', JSON.stringify(user));
                     showToast(`Welcome, ${user.username}!`, 'success');
-                    showSection('turfs'); // Changed to 'turfs' as 'turf-list' is an ID within 'turfs' section
+                    showSection('turfs');
                     loadTurfs();
-                    updateNavbar(true);
+                    updateNavbar();
                 } else if (res.status === 403) {
                     const data = await res.json().catch(() => null);
                     showToast(data && data.error ? data.error : 'Email not verified. Please verify your email to login.', 'warning');
@@ -1273,8 +1742,21 @@
         }
 
         function getUserId() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            return user ? user.id : null;
+            try {
+                const raw = localStorage.getItem('user');
+                if (!raw) { console.warn('[Auth] No user in localStorage'); return null; }
+                const stored = JSON.parse(raw);
+                // Try every possible shape the backend might have stored
+                const id = (stored.id)           // correct shape {id, email, username}
+                        || (stored.user && stored.user.id)  // wrapped shape {user:{id,...}}
+                        || (stored.userId)        // alternative key
+                        || null;
+                console.log('[Auth] getUserId =>', id, '| raw keys:', Object.keys(stored));
+                return id;
+            } catch(e) {
+                console.error('[Auth] getUserId error', e);
+                return null;
+            }
         }
         // INR Currency Formatter
         function formatINR(amount) {
@@ -1287,7 +1769,35 @@
         }
 
         // Fetch and Render Turfs
+        function getSportFallbackImage(sportType, imageUrl) {
+            if (imageUrl && imageUrl.trim().length > 15 && !imageUrl.includes('placeholder.com')) {
+                return imageUrl;
+            }
+            const type = (sportType || '').toLowerCase();
+            if (type.includes('football') || type.includes('soccer')) {
+                return 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=800';
+            } else if (type.includes('cricket')) {
+                return 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=800';
+            } else if (type.includes('badminton')) {
+                return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=800';
+            } else if (type.includes('tennis')) {
+                return 'https://images.unsplash.com/photo-1595435066319-70528421928f?auto=format&fit=crop&q=80&w=800';
+            } else if (type.includes('basketball')) {
+                return 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800';
+            } else if (type.includes('volleyball')) {
+                return 'https://images.unsplash.com/photo-1592656670491-ee81115eeaa7?auto=format&fit=crop&q=80&w=800';
+            } else if (type.includes('pickleball')) {
+                return 'https://images.unsplash.com/photo-1629731634341-2a62174360e2?auto=format&fit=crop&q=80&w=800';
+            }
+            return 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?auto=format&fit=crop&q=80&w=800';
+        }
+
         function loadTurfs(filterSport = null) {
+            const filterBtn = document.getElementById('filter-dropdown-btn');
+            if (filterBtn) {
+                filterBtn.innerHTML = filterSport ? `<i class="bi bi-funnel-fill me-1"></i> ${filterSport}` : `<i class="bi bi-funnel me-1"></i> Filter by Sport`;
+            }
+
             fetch('/api/turfs')
                 .then(res => res.json())
                 .then(data => {
@@ -1295,14 +1805,15 @@
                     list.innerHTML = '';
 
                     let filteredData = data;
-                    if (filterSport) {
-                        filteredData = data.filter(t => t.sportType.toLowerCase() === filterSport.toLowerCase());
+                    if (filterSport && filterSport.trim().length > 0) {
+                        const targetSport = filterSport.trim().toLowerCase();
+                        filteredData = data.filter(t => t.sportType && t.sportType.trim().toLowerCase() === targetSport);
                     }
 
                     if (filteredData.length === 0) {
                         list.innerHTML = `<div class="col-12 text-center py-5">
                             <h4 class="text-muted">No ${filterSport || ''} turfs found.</h4>
-                            <button class="btn btn-primary mt-3" onclick="loadTurfs()">Show All Turfs</button>
+                            <button class="btn btn-outline-success mt-3" onclick="loadTurfs()">Show All Turfs</button>
                         </div>`;
                         return;
                     }
@@ -1310,9 +1821,10 @@
                     filteredData.forEach(turf => {
                         const col = document.createElement('div');
                         col.className = 'col-md-4';
+                        const imgSrc = getSportFallbackImage(turf.sportType, turf.imageUrl);
                         col.innerHTML = `
                             <div class="turf-card">
-                                <img src="${turf.imageUrl || 'https://via.placeholder.com/400x200'}" class="turf-img" alt="${turf.name}">
+                                <img src="${imgSrc}" class="turf-img" alt="${turf.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1575361204480-aadea25e6e68?auto=format&fit=crop&q=80&w=800';">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h5 class="turf-title mb-0">${turf.name}</h5>
@@ -1349,20 +1861,41 @@
             openBookingModal(turfId, turfName);
         }
 
+        // Helper to format a Date object as YYYY-MM-DD
+        function formatDate(d) {
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // Quick-select: 0 = today, 1 = tomorrow, 2 = day after
+        window.quickDate = function(daysAhead) {
+            const d = new Date();
+            d.setDate(d.getDate() + daysAhead);
+            const dateStr = formatDate(d);
+            openBookingModal(currentTurfId, currentTurfName, dateStr);
+        };
+
         window.openBookingModal = function (turfId, turfName, date = null) {
             currentTurfId = turfId;
             currentTurfName = turfName;
+            selectedSlot = null;
+            const confirmBtn = document.getElementById('confirmBookingBtn');
+            if (confirmBtn) confirmBtn.disabled = true;
+
             const bookingDateInput = document.getElementById('booking-date');
+
+            // Set min = today, max = 30 days from now
+            const today = new Date();
+            bookingDateInput.min = formatDate(today);
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 30);
+            bookingDateInput.max = formatDate(maxDate);
+
             if (!date) {
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                date = `${yyyy}-${mm}-${dd}`;
+                date = formatDate(today);
             }
             selectedBookingDate = date;
             bookingDateInput.value = date;
-            const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('bookingModal'));
             document.getElementById('bookingModalLabel').innerText = `Book ${turfName}`;
             document.getElementById('slots-container').innerHTML = '<div class="text-center w-100"><div class="spinner-border text-success" role="status"></div></div>';
             modal.show();
@@ -1378,14 +1911,40 @@
                         return;
                     }
 
+                    // Legend
+                    const legend = document.createElement('div');
+                    legend.className = 'w-100 d-flex gap-3 mb-3 flex-wrap';
+                    legend.innerHTML = `
+                        <span style="font-size:0.8rem;display:flex;align-items:center;gap:5px;">
+                            <span style="width:12px;height:12px;border-radius:3px;background:var(--primary-color);display:inline-block;"></span> Available
+                        </span>
+                        <span style="font-size:0.8rem;display:flex;align-items:center;gap:5px;">
+                            <span style="width:12px;height:12px;border-radius:3px;background:#ff4444;display:inline-block;"></span> Booked
+                        </span>
+                        <span style="font-size:0.8rem;display:flex;align-items:center;gap:5px;">
+                            <span style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,0.15);display:inline-block;"></span> Past (resets tomorrow)
+                        </span>`;
+                    container.appendChild(legend);
+
                     slots.forEach(slot => {
                         const btn = document.createElement('button');
-                        btn.className = `col-3 btn btn-outline-${slot.booked ? 'secondary' : 'success'} m-1`;
                         btn.innerText = slot.time;
+
                         if (slot.booked) {
+                            // Actually reserved by someone
+                            btn.className = 'col-3 btn m-1 text-decoration-line-through';
+                            btn.style.cssText = 'background:rgba(255,68,68,0.15);border:1px solid #ff4444;color:#ff4444;cursor:not-allowed;';
                             btn.disabled = true;
-                            btn.classList.add('text-decoration-line-through');
+                            btn.title = 'Already booked by someone';
+                        } else if (slot.past) {
+                            // Time has passed — resets automatically next day
+                            btn.className = 'col-3 btn btn-outline-secondary m-1 text-decoration-line-through';
+                            btn.disabled = true;
+                            btn.title = 'This time has already passed today';
                         } else {
+                            // Available to book
+                            btn.className = 'col-3 btn btn-outline-success m-1';
+                            btn.title = 'Click to select this slot';
                             btn.onclick = () => selectSlot(btn, slot.time);
                         }
                         container.appendChild(btn);
@@ -1410,9 +1969,18 @@
         // Booking modal — Confirm Booking btn now opens payment modal
         let pendingTurfData = null;
         document.getElementById('confirmBookingBtn').onclick = function () {
-            if (!currentTurfId || !selectedSlot) return;
+            if (!currentTurfId || !selectedSlot) {
+                showToast('Please select a slot first!', 'warning');
+                return;
+            }
             const userId = getUserId();
-            if (!userId) return;
+            if (!userId) {
+                showToast('Please login to book a turf!', 'warning');
+                const bModal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
+                if (bModal) bModal.hide();
+                showSection('login');
+                return;
+            }
 
             // Fetch turf info to display amount
             fetch(`/api/turfs/${currentTurfId}`)
@@ -1424,47 +1992,37 @@
                     document.getElementById('pay-amount').innerText = formatINR(turf.pricePerHour);
 
                     // Close booking modal, open payment modal
-                    bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
+                    const bModal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
+                    if (bModal) bModal.hide();
+
                     setTimeout(() => {
-                        new bootstrap.Modal(document.getElementById('paymentModal')).show();
+                        const pModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('paymentModal'));
+                        pModal.show();
                     }, 400);
                 })
                 .catch(() => showToast('Could not load turf details', 'danger'));
         };
 
-        // Card number auto-formatting
-        document.getElementById('card-number').addEventListener('input', function () {
-            let v = this.value.replace(/\D/g, '').substring(0, 16);
-            this.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
-        });
-
-        // Expiry auto-formatting
-        document.getElementById('card-expiry').addEventListener('input', function () {
-            let v = this.value.replace(/\D/g, '').substring(0, 4);
-            if (v.length >= 2) v = v.substring(0, 2) + ' / ' + v.substring(2);
-            this.value = v;
-        });
-
-        // Payment form submit — calls mock-pay endpoint
-        document.getElementById('payment-form').onsubmit = async function (e) {
-            e.preventDefault();
+        // ── Submit Payment (UPI or Pay at Venue) ──
+        window.submitMockPayment = async function (paymentMethod = 'UPI') {
             const userId = getUserId();
-            const btn = document.getElementById('pay-now-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
-
-            // Basic card validation
-            const cardNum = document.getElementById('card-number').value.replace(/\s/g, '');
-            const cardName = document.getElementById('card-name').value.trim();
-            const expiry = document.getElementById('card-expiry').value.trim();
-            const cvv = document.getElementById('card-cvv').value.trim();
-
-            if (cardNum.length < 16 || !cardName || expiry.length < 7 || cvv.length < 3) {
-                showToast('Please fill in all card details correctly', 'danger');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>Pay Now';
+            if (!userId) {
+                showToast('Please login first', 'warning');
                 return;
             }
+
+            if (paymentMethod === 'UPI') {
+                const upiId = document.getElementById('upi-id-input').value.trim();
+                if (!upiId) {
+                    showToast('Please enter a valid UPI ID', 'danger');
+                    return;
+                }
+            }
+
+            // Show processing overlay
+            const proc = document.getElementById('payment-processing');
+            proc.style.display = 'flex';
+            document.getElementById('proc-text').textContent = paymentMethod === 'UPI' ? 'Verifying UPI & Confirming...' : 'Reserving Slot...';
 
             try {
                 const res = await fetch('/api/payment/mock-pay', {
@@ -1474,22 +2032,65 @@
                 });
                 const data = await res.json();
 
-                bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
-
                 if (res.ok && data.success) {
-                    showToast(`\uD83C\uDF89 ${data.message}`, 'success');
-                    setTimeout(() => {
-                        showSection('profile');
-                    }, 1200);
+                    document.getElementById('proc-text').textContent = 'Confirmed!';
+                    await new Promise(r => setTimeout(r, 600));
+                    proc.style.display = 'none';
+
+                    // Hide form, show success screen
+                    document.getElementById('payment-form-wrap').style.display = 'none';
+                    const successEl = document.getElementById('payment-success');
+                    successEl.style.display = 'flex';
+
+                    // Fill success details
+                    document.getElementById('success-ref-id').textContent = 'TRF-' + (data.bookingId || '').toString().slice(-8).toUpperCase();
+                    document.getElementById('success-turf').textContent = data.turfName || pendingTurfData?.name || '';
+                    document.getElementById('success-date').textContent = selectedBookingDate || '';
+                    document.getElementById('success-slot').textContent = selectedSlot + ':00 – ' + (parseInt(selectedSlot) + 1) + ':00';
+                    document.getElementById('success-amount').textContent = paymentMethod === 'Cash' ? 'Pay ₹' + (data.amount || pendingTurfData?.pricePerHour || '') + ' at Venue' : '₹' + (data.amount || pendingTurfData?.pricePerHour || '');
+
+                    showToast(paymentMethod === 'Cash' ? '🎉 Slot Reserved (Pay at Turf)' : '🎉 Booking Confirmed via UPI!', 'success');
                 } else {
-                    showToast(data.message || 'Payment failed', 'danger');
+                    proc.style.display = 'none';
+                    showToast(data.message || 'Booking failed', 'danger');
                 }
             } catch (err) {
+                proc.style.display = 'none';
                 showToast('Connection error. Please try again.', 'danger');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>Pay Now';
             }
+        };
+
+        function openFooterModal(type) {
+            const modalId = type + 'Modal';
+            const modalEl = document.getElementById(modalId);
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            showToast(`Thank you ${name}! Your message has been sent to our support team.`, 'success');
+            const modalEl = document.getElementById('contactModal');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            }
+        }
+
+        // Reset payment modal when it's closed
+        document.getElementById('paymentModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('payment-form-wrap').style.display = '';
+            document.getElementById('payment-success').style.display = 'none';
+            document.getElementById('payment-processing').style.display = 'none';
+        });
+
+        // Go to bookings from success screen
+        window.goToBookings = function () {
+            bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+            setTimeout(() => showSection('profile'), 300);
         };
 
         // Check for payment success/cancel on load
@@ -1518,14 +2119,14 @@
             if (!userId) return;
 
             const container = document.getElementById('my-bookings-list');
-            container.innerHTML = '<tr><td colspan="3" class="text-center"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
+            container.innerHTML = '<tr><td colspan="4" class="text-center"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
 
             fetch(`/api/turfs/bookings/user/${userId}`)
                 .then(res => res.json())
                 .then(bookings => {
                     container.innerHTML = '';
-                    if (bookings.length === 0) {
-                        container.innerHTML = '<tr><td colspan="3" class="text-center text-muted">You haven\'t booked any slots yet.</td></tr>';
+                    if (!Array.isArray(bookings) || bookings.length === 0) {
+                        container.innerHTML = '<tr><td colspan="4" class="text-center text-muted">You haven\'t booked any slots yet.</td></tr>';
                         return;
                     }
 
@@ -1536,15 +2137,17 @@
                         const date = new Date(booking.startTime).toLocaleDateString();
                         const time = new Date(booking.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+                        const turfName = (booking.turf && booking.turf.name) ? booking.turf.name : (booking.turfName || 'Sports Turf');
+
                         const bookingBadge = booking.status === 'CONFIRMED'
                             ? `<span class="badge bg-success">${booking.status}</span>`
-                            : `<span class="badge bg-warning text-dark">${booking.status}</span>`;
+                            : `<span class="badge bg-warning text-dark">${booking.status || 'PENDING'}</span>`;
                         const payBadge = booking.paymentStatus === 'PAID'
                             ? `<span class="badge bg-success">PAID</span>`
                             : `<span class="badge bg-secondary">${booking.paymentStatus || 'N/A'}</span>`;
                         tr.innerHTML = `
-                            <td class="fw-bold">${booking.turf.name}</td>
-                            <td>${date} at ${time}</td>
+                            <td class="fw-bold" style="color: #ffffff !important; font-size: 0.95rem;">${turfName}</td>
+                            <td style="color: rgba(255, 255, 255, 0.9) !important; font-size: 0.9rem;">${date} at ${time}</td>
                             <td>${bookingBadge}</td>
                             <td>${payBadge}</td>
                         `;
@@ -1552,7 +2155,8 @@
                     });
                 })
                 .catch(err => {
-                    container.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Failed to load bookings.</td></tr>';
+                    console.error('[Bookings] Error loading user bookings:', err);
+                    container.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Failed to load bookings.</td></tr>';
                 });
         }
 
@@ -1620,9 +2224,31 @@
             });
         }
 
-        // Initial Load
+        // ── localStorage migration: fix stale broken user data ──
+        (function migrateUserData() {
+            try {
+                const raw = localStorage.getItem('user');
+                if (!raw) return;
+                const stored = JSON.parse(raw);
+                // If stored object has nested 'user' key, flatten it
+                if (stored && stored.user && stored.user.id) {
+                    localStorage.setItem('user', JSON.stringify(stored.user));
+                }
+                // If stored object has no 'id' at all, clear it (corrupt data)
+                const fixed = JSON.parse(localStorage.getItem('user'));
+                if (fixed && !fixed.id) {
+                    localStorage.removeItem('user');
+                }
+            } catch(e) {
+                localStorage.removeItem('user');
+            }
+        })();
+
+        // Initial Load based on clean URL path
         updateNavbar();
-        loadTurfs();
+        const rawPath = window.location.pathname.replace(/^\//, '');
+        const initialRoute = rawPath || window.location.hash.replace('#', '') || 'home';
+        showSection(initialRoute, false);
     </script>
 </body>
 

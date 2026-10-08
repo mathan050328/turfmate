@@ -24,6 +24,7 @@ public class Booking {
 
     // Flat fields for efficient querying (no @DBRef traversal needed)
     private String turfId;
+    private String turfName;
     private String userId;
 
     private LocalDateTime startTime;
