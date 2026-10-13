@@ -10,18 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * REST Controller for User Authentication and Email Verification.
- * 
- * Handles User Login, Registration, and 6-Digit OTP Email Verification via SMTP.
- * 
- * Endpoint Base: /api/auth
- */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -32,11 +27,8 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final EmailService emailService;
     private final AuthValidationService authValidationService;
-    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * POST /api/auth/login - Authenticate user credentials and return profile metadata
-     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
@@ -49,9 +41,16 @@ public class AuthController {
                     if (!user.isVerified()) {
                         return ResponseEntity.status(403).body((Object) Map.of("success", false, "error", "Please verify your email before logging in."));
                     }
-                    boolean isPasswordValid = passwordEncoder.matches(request.getPassword(), user.getPassword()) 
-                            || user.getPassword().equals(request.getPassword());
-                    if (isPasswordValid) {
+                    boolean isBcryptMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
+                    boolean isLegacyPlainMatch = user.getPassword().equals(request.getPassword());
+
+                    if (isBcryptMatch || isLegacyPlainMatch) {
+                        // Migrate legacy plain-text password to hash on login
+                        if (isLegacyPlainMatch && !isBcryptMatch) {
+                            user.setPassword(passwordEncoder.encode(request.getPassword()));
+                            userRepository.save(user);
+                        }
+
                         boolean isAdmin = user.getRoles() != null && user.getRoles().stream()
                                 .anyMatch(r -> "ROLE_ADMIN".equalsIgnoreCase(r.getName()));
                         return ResponseEntity.ok((Object) new AuthResponse(user.getId(), user.getEmail(), user.getUsername(), isAdmin));
@@ -62,9 +61,6 @@ public class AuthController {
                 .orElse(ResponseEntity.status(404).body(Map.of("success", false, "error", "Email not registered. Would you like to create an account?")));
     }
 
-    /**
-     * POST /api/auth/register - Create pending user account and send 6-digit verification OTP
-     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
@@ -72,6 +68,10 @@ public class AuthController {
             return ResponseEntity.status(400).body(Map.of("success", false, "error", "Please enter a valid Gmail address."));
         }
         
+        if (request.getPassword() == null || request.getPassword().length() < 6) {
+            return ResponseEntity.status(400).body(Map.of("success", false, "error", "Password must be at least 6 characters long for security."));
+        }
+
         if (userRepository.existsByEmail(normalizedEmail)) {
             return ResponseEntity.status(400).body(Map.of("success", false, "error", "Email already in use"));
         }
@@ -81,7 +81,7 @@ public class AuthController {
         User user = new User();
         user.setEmail(normalizedEmail);
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // BCrypt Hashed Password
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setVerified(false);
         user.setVerificationToken(otp);
 
@@ -99,16 +99,13 @@ public class AuthController {
             e.printStackTrace();
         }
         
-        Map<String, Object> resp = new java.util.HashMap<>();
+        Map<String, Object> resp = new HashMap<>();
         resp.put("success", true);
         resp.put("message", emailSent ? "User registered successfully. Please check your email for the verification OTP." : "User registered! Verification code: " + otp);
         resp.put("otp", otp);
         return ResponseEntity.ok(resp);
     }
     
-    /**
-     * POST /api/auth/verify - Verify 6-digit OTP code to activate user account
-     */
     @PostMapping("/verify")
     public ResponseEntity<?> verifyEmail(@RequestBody VerifyRequest request) {
         String normalizedEmail = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();

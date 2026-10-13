@@ -1,26 +1,22 @@
 package com.example.turf.controller;
 
-import com.example.turf.model.Turf;
 import com.example.turf.model.Booking;
+import com.example.turf.model.Turf;
 import com.example.turf.model.User;
-import com.example.turf.repository.TurfRepository;
 import com.example.turf.repository.BookingRepository;
+import com.example.turf.repository.TurfRepository;
 import com.example.turf.repository.UserRepository;
 import com.example.turf.service.BookingService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * REST Controller for Turf Exploration and Slot Booking.
- * 
- * Endpoint Base: /api/turfs
- */
 @RestController
 @RequestMapping("/api/turfs")
 @CrossOrigin(origins = "*")
@@ -32,45 +28,35 @@ public class TurfController {
     private final UserRepository userRepository;
     private final BookingService bookingService;
 
-    /**
-     * GET /api/turfs - Fetch all available sports turfs
-     */
     @GetMapping
     public List<Turf> getAllTurfs() {
         return turfRepository.findAll();
     }
 
-    /**
-     * GET /api/turfs/{id} - Fetch a single turf by ID
-     */
     @GetMapping("/{id}")
     public Turf getTurf(@PathVariable String id) {
         return turfRepository.findById(id).orElseThrow(() -> new RuntimeException("Turf not found with id: " + id));
     }
 
-    /**
-     * GET /api/turfs/{id}/slots - Compute dynamic 1-hour slots for a specified date (6 AM to 10 PM)
-     */
     @GetMapping("/{id}/slots")
     public List<SlotDTO> getSlots(@PathVariable String id, @RequestParam(required = false) String date) {
         LocalDate targetDate = (date != null && !date.isBlank()) ? LocalDate.parse(date) : LocalDate.now();
         List<SlotDTO> slots = new ArrayList<>();
+        List<Booking> turfBookings = bookingRepository.findByTurfId(id);
+        LocalDateTime now = LocalDateTime.now();
 
         for (int hour = 6; hour < 22; hour++) {
             LocalDateTime start = LocalDateTime.of(targetDate, LocalTime.of(hour, 0));
             LocalDateTime end = start.plusHours(1);
 
-            boolean isBooked = bookingService.isSlotBooked(id, start, end);
-            boolean isPast = bookingService.shouldDisableSlot(targetDate, hour + ":00", LocalDateTime.now());
+            boolean isBooked = bookingService.isSlotBookedInList(turfBookings, start, end);
+            boolean isPast = bookingService.shouldDisableSlot(targetDate, hour + ":00", now);
 
             slots.add(new SlotDTO(hour + ":00", isBooked, isPast));
         }
         return slots;
     }
 
-    /**
-     * POST /api/turfs/book - Book a specific turf slot
-     */
     @PostMapping("/book")
     public Booking bookTurf(@RequestBody BookingRequest request) {
         Turf turf = turfRepository.findById(request.getTurfId())
@@ -104,9 +90,6 @@ public class TurfController {
         return bookingRepository.save(booking);
     }
 
-    /**
-     * GET /api/turfs/bookings/user/{userId} - Fetch complete booking history for a user
-     */
     @GetMapping("/bookings/user/{userId}")
     public List<Booking> getBookingsByUser(@PathVariable String userId) {
         return bookingRepository.findByUserId(userId);

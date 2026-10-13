@@ -4,12 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Web MVC Configuration for HTML5 History API Routing.
- * 
- * Maps single-page application clean path routes (/home, /turfs, /bookings, /login)
- * directly to index.html so browser refresh works smoothly without # hashes.
- */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

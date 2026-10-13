@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Turf Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -744,6 +747,243 @@
         }
         .success-detail-row span:first-child { color: rgba(255,255,255,0.5); }
         .success-detail-row span:last-child { color: #fff; font-weight: 600; }
+
+        /* ── Rich Modal Animations & Glassmorphism ── */
+        .modal.fade .modal-dialog {
+            transform: scale(0.85) translateY(40px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .animated-modal-content {
+            background: linear-gradient(135deg, rgba(16, 21, 40, 0.98), rgba(24, 32, 64, 0.98)) !important;
+            border: 1px solid rgba(0, 255, 136, 0.35) !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 255, 136, 0.15) !important;
+            border-radius: 24px !important;
+            overflow: hidden;
+            position: relative;
+        }
+        .animated-modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.08) 0%, transparent 65%);
+            pointer-events: none;
+            animation: pulseGlow 6s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { transform: scale(0.9) rotate(0deg); opacity: 0.5; }
+            100% { transform: scale(1.1) rotate(15deg); opacity: 1; }
+        }
+        .info-card-anim {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 18px;
+            transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .info-card-anim:hover {
+            transform: translateY(-6px) scale(1.02);
+            background: rgba(0, 255, 136, 0.06);
+            border-color: rgba(0, 255, 136, 0.4);
+            box-shadow: 0 12px 28px rgba(0, 255, 136, 0.15);
+        }
+        .icon-bounce-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--primary-color);
+            transition: transform 0.4s ease;
+        }
+        .info-card-anim:hover .icon-bounce-box {
+            transform: scale(1.15) rotate(8deg);
+            background: rgba(0, 255, 136, 0.28);
+        }
+        .policy-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease, border-left-color 0.3s ease;
+        }
+        .policy-card:hover {
+            transform: translateX(6px);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        /* ── Profile Photo Upload Styling ── */
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1.25rem;
+            cursor: pointer;
+        }
+        .profile-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.35);
+            transition: transform 0.3s ease, filter 0.3s ease;
+            background: #12182b;
+        }
+        .profile-avatar-wrapper:hover .profile-avatar-img {
+            transform: scale(1.05);
+            filter: brightness(0.8);
+        }
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            color: #0b1021;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .profile-avatar-wrapper:hover .avatar-edit-badge {
+            transform: scale(1.2);
+        }
+        .nav-avatar-img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--primary-color);
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        /* ── Dedicated Animated Section Enhancements ── */
+        .section-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        .section-hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        .feature-box-glow {
+            background: rgba(18, 24, 45, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        .feature-box-glow:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 136, 0.35);
+            background: rgba(22, 30, 56, 0.85);
+            box-shadow: 0 16px 36px rgba(0, 255, 136, 0.12);
+        }
+        .feature-icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: rgba(0, 255, 136, 0.12);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            transition: transform 0.4s ease;
+        }
+        .feature-box-glow:hover .feature-icon-circle {
+            transform: scale(1.1) rotate(6deg);
+            background: rgba(0, 255, 136, 0.22);
+        }
+        .contact-channel-card {
+            background: linear-gradient(145deg, rgba(20, 28, 52, 0.8), rgba(15, 20, 38, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2.2rem;
+            text-align: center;
+            transition: all 0.35s ease;
+            height: 100%;
+        }
+        .contact-channel-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 136, 0.4);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 255, 136, 0.15);
+        }
+        .legal-accordion-card {
+            background: rgba(18, 24, 46, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.6rem 2rem;
+            margin-bottom: 1.2rem;
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        .legal-accordion-card:hover {
+            transform: translateX(8px);
+            background: rgba(24, 32, 60, 0.9);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+        .legal-accordion-card.warn-border {
+            border-left-color: #ffc107;
+        }
+        .back-nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-nav-btn:hover {
+            background: rgba(0, 255, 136, 0.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateX(-4px);
+        }
     </style>
 </head>
 
@@ -957,9 +1197,21 @@
                 <div class="col-lg-4">
                     <div class="glass-panel rounded-4 mb-4">
                         <div class="card-body p-4 text-center">
-                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                                style="width: 80px; height: 80px; background: rgba(0, 255, 136, 0.15); border: 2px solid rgba(0, 255, 136, 0.3);">
-                                <i class="bi bi-person-fill fs-1" style="color: var(--primary-color);"></i>
+                            <!-- Interactive Profile Photo with Upload Feature -->
+                            <div class="profile-avatar-wrapper" onclick="document.getElementById('profile-photo-input').click()" title="Click to upload profile photo">
+                                <img id="profile-avatar-img" class="profile-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200" alt="Profile Picture">
+                                <div class="avatar-edit-badge">
+                                    <i class="bi bi-camera-fill"></i>
+                                </div>
+                            </div>
+                            <input type="file" id="profile-photo-input" accept="image/*" style="display: none;" onchange="handleProfilePhotoUpload(event)">
+                            <div class="d-flex justify-content-center gap-2 mb-3">
+                                <button class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" onclick="document.getElementById('profile-photo-input').click()">
+                                    <i class="bi bi-upload me-1"></i> Change Photo
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1" id="remove-photo-btn" onclick="removeProfilePhoto()" title="Remove Photo" style="display:none;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                             <h4 id="profile-username" class="fw-bold mb-1" style="color:#fff;">Username</h4>
                             <p id="profile-email" class="mb-0" style="color:var(--text-muted);">email@example.com</p>
@@ -992,6 +1244,305 @@
         </div>
     </div>
 
+    <!-- About Us Section -->
+    <div id="about" class="section">
+        <div style="height: 100px; background: var(--bg-color);"></div>
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="javascript:void(0)" onclick="showSection('home')" class="back-nav-btn">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+                <span class="section-header-badge"><i class="bi bi-info-circle-fill"></i> About TurfMate</span>
+            </div>
+
+            <div class="row align-items-center mb-5 g-5">
+                <div class="col-lg-6">
+                    <h1 class="section-hero-title">Revolutionizing Sports Turf Booking</h1>
+                    <p class="text-white opacity-75 fs-5 leading-relaxed mb-4">
+                        TurfMate is Tamil Nadu's premiere intelligent sports arena booking platform, connecting passionate athletes with elite synthetic turf venues across Coimbatore in real-time.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <button class="btn hero-btn px-4 py-2" onclick="showSection('turfs')">
+                            Explore Available Turfs <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                        <a href="javascript:void(0)" onclick="showSection('contact')" class="btn btn-outline-light rounded-pill px-4 py-2">
+                            Talk with Support
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="p-4 rounded-4" style="background: radial-gradient(circle at center, rgba(0,255,136,0.15), rgba(18,24,45,0.85)); border: 1px solid rgba(0,255,136,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                        <div class="row g-3 text-center">
+                            <div class="col-6">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                                    <h2 class="fw-bold mb-0 text-success">10+</h2>
+                                    <small class="text-muted text-uppercase tracking-wider">Premium Turfs</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                                    <h2 class="fw-bold mb-0 text-success">60s</h2>
+                                    <small class="text-muted text-uppercase tracking-wider">Instant Slot Lock</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                                    <h2 class="fw-bold mb-0 text-success">100%</h2>
+                                    <small class="text-muted text-uppercase tracking-wider">Zero Double-Booking</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                                    <h2 class="fw-bold mb-0 text-success">24/7</h2>
+                                    <small class="text-muted text-uppercase tracking-wider">Live System Sync</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="feature-box-glow">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-2">Automated Slot Reservation</h4>
+                        <p class="text-muted mb-0 leading-relaxed">
+                            No manual phone calls or double-booked grounds. Pick your preferred date, lock a slot in under 60 seconds, and receive instant confirmation.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box-glow">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-2">Enterprise-Grade Security</h4>
+                        <p class="text-muted mb-0 leading-relaxed">
+                            Secured with BCrypt adaptive password hashing, real Gmail SMTP 6-digit OTP email verification, and role-based admin controls.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box-glow">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-2">Flexible Payment Gateways</h4>
+                        <p class="text-muted mb-0 leading-relaxed">
+                            Pay via instant UPI QR codes, debit/credit cards, or choose our popular "Pay-at-Turf" cash counter option when you arrive.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact & Support Section -->
+    <div id="contact" class="section">
+        <div style="height: 100px; background: var(--bg-color);"></div>
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="javascript:void(0)" onclick="showSection('home')" class="back-nav-btn">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+                <span class="section-header-badge"><i class="bi bi-headset"></i> Support Center</span>
+            </div>
+
+            <div class="text-center mb-5">
+                <h1 class="section-hero-title">We're Here to Help You Play</h1>
+                <p class="text-white opacity-75 fs-5 mx-auto" style="max-width: 650px;">
+                    Have questions about turf booking, corporate tournament reservations, or venue partner inquiries? Connect with our Coimbatore operations desk.
+                </p>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="contact-channel-card">
+                        <div class="icon-bounce-box mb-3" style="width:70px; height:70px; font-size:2rem;">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-white mb-2">Central Operations Desk</h5>
+                        <p class="text-muted small mb-2">Visit our Coimbatore HQ:</p>
+                        <div class="text-white fw-bold fs-6 mb-2">Ondipudur, Coimbatore</div>
+                        <div class="text-muted small">Tamil Nadu, India &bull; 641016</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="contact-channel-card">
+                        <div class="icon-bounce-box mb-3" style="width:70px; height:70px; font-size:2rem;">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-white mb-2">Direct Phone & WhatsApp</h5>
+                        <p class="text-muted small mb-2">Call our booking hotline anytime:</p>
+                        <a href="tel:+917904977500" class="text-decoration-none fs-5 fw-bold" style="color: var(--primary-color);">
+                            +91 79049 77500
+                        </a>
+                        <div class="text-muted small mt-2">Available 24 hours &bull; 7 days a week</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="contact-channel-card">
+                        <div class="icon-bounce-box mb-3" style="width:70px; height:70px; font-size:2rem;">
+                            <i class="bi bi-envelope-check-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-white mb-2">Official Email Support</h5>
+                        <p class="text-muted small mb-2">Admin desk & verified response:</p>
+                        <a href="mailto:mathanadmin@gmail.com" class="text-decoration-none fs-6 fw-bold" style="color: var(--primary-color);">
+                            mathanadmin@gmail.com
+                        </a>
+                        <div class="text-muted small mt-2">Average response time: &lt; 15 mins</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Inquiry Box -->
+            <div class="glass-panel rounded-4 p-4 p-md-5">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h3 class="fw-bold text-white mb-2">Looking for Instant Ground Booking?</h3>
+                        <p class="text-muted mb-0">Browse real-time slots across Ondipudur, Singanallur, Saravanampatti, and Gandhipuram venues right now.</p>
+                    </div>
+                    <div class="col-lg-6 text-lg-end">
+                        <button class="btn hero-btn px-4 py-3" onclick="showSection('turfs')">
+                            <i class="bi bi-calendar-check me-2"></i> Book A Turf Slot Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Section -->
+    <div id="privacy" class="section">
+        <div style="height: 100px; background: var(--bg-color);"></div>
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="javascript:void(0)" onclick="showSection('home')" class="back-nav-btn">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+                <span class="section-header-badge"><i class="bi bi-shield-check"></i> Privacy Policy</span>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="glass-panel rounded-4 p-4 sticky-top" style="top: 120px;">
+                        <div class="icon-bounce-box mb-3" style="width:60px; height:60px;">
+                            <i class="bi bi-lock-fill fs-3"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-2">Your Privacy is Protected</h4>
+                        <p class="text-muted small mb-4">
+                            We implement TLS 1.3 encryption and zero third-party data selling policies to ensure player details remain 100% confidential.
+                        </p>
+                        <div class="small text-muted border-top border-secondary pt-3">
+                            <div><i class="bi bi-check2-circle text-success me-2"></i>256-Bit SSL Secured</div>
+                            <div class="mt-2"><i class="bi bi-check2-circle text-success me-2"></i>No Financial Data Stored</div>
+                            <div class="mt-2"><i class="bi bi-check2-circle text-success me-2"></i>GDPR & DPDP Aligned</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="legal-accordion-card">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-database me-2 text-success"></i>1. Information We Collect</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            When registering an account or reserving a sports turf, we collect your display name, verified Gmail address, and slot reservation timestamps. All passwords are encrypted with adaptive BCrypt hashing.
+                        </p>
+                    </div>
+
+                    <div class="legal-accordion-card">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-envelope-paper me-2 text-success"></i>2. Purpose of Data Processing</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            Your email address is strictly used for one-time password (OTP) verification, automated booking confirmation vouchers, and essential status updates. We do not transmit spam or sell your personal data.
+                        </p>
+                    </div>
+
+                    <div class="legal-accordion-card">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-credit-card me-2 text-success"></i>3. Payment Privacy & Security</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            All digital transactions (UPI / QR / Cards) are processed over end-to-end encrypted TLS tunnels. TurfMate never records, handles, or retains UPI PINs, CVVs, or bank login credentials on its servers.
+                        </p>
+                    </div>
+
+                    <div class="legal-accordion-card">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-person-gear me-2 text-success"></i>4. User Control & Data Deletion</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            You maintain complete autonomy over your profile data. You can inspect your past slot records under "My Bookings" or request account removal anytime by writing to <span class="text-success fw-bold">mathanadmin@gmail.com</span>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Section -->
+    <div id="terms" class="section">
+        <div style="height: 100px; background: var(--bg-color);"></div>
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="javascript:void(0)" onclick="showSection('home')" class="back-nav-btn">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+                <span class="section-header-badge" style="color:#ffc107; border-color: rgba(255,193,7,0.3); background: rgba(255,193,7,0.1);">
+                    <i class="bi bi-file-text-fill"></i> Terms of Service
+                </span>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="glass-panel rounded-4 p-4 sticky-top" style="top: 120px;">
+                        <div class="icon-bounce-box mb-3" style="width:60px; height:60px; color:#ffc107; background: rgba(255,193,7,0.15);">
+                            <i class="bi bi-exclamation-triangle-fill fs-3"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-2">Ground Rules & Conduct</h4>
+                        <p class="text-muted small mb-4">
+                            All players and tournament teams are requested to follow turf surface guidelines and punctual reporting for fair play.
+                        </p>
+                        <div class="small text-muted border-top border-secondary pt-3">
+                            <div><i class="bi bi-check2-circle text-warning me-2"></i>Non-Marking Footwear Only</div>
+                            <div class="mt-2"><i class="bi bi-check2-circle text-warning me-2"></i>Arrive 10 Mins Prior</div>
+                            <div class="mt-2"><i class="bi bi-check2-circle text-warning me-2"></i>2-Hour Rescheduling Window</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="legal-accordion-card warn-border">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-clock-history me-2 text-warning"></i>1. Slot Reservation & Punctuality</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            Bookings are locked for the exact 1-hour slot selected. Players must report at least 10 minutes prior to slot kickoff. Late arrivals cannot be compensated with slot extensions due to following reservations.
+                        </p>
+                    </div>
+
+                    <div class="legal-accordion-card warn-border">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-trophy me-2 text-warning"></i>2. Footwear & Synthetic Grass Maintenance</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            Only non-marking flat sports sneakers or turf studs are permitted. Metal cleats, spikes, smoking, chewing gum, and sugary beverages are strictly prohibited on the turf turf playing surface.
+                        </p>
+                    </div>
+
+                    <div class="legal-accordion-card warn-border">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-arrow-counterclockwise me-2 text-warning"></i>3. Cancellation & Refund Policy</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            Slot cancellations or reschedule requests placed at least 2 hours before the booked hour are eligible for a 100% full refund or date-switch voucher. Last-minute cancellations are non-refundable.
+                        </p>
+                    </div>
+
+                    <div class="legal-accordion-card warn-border">
+                        <h4 class="fw-bold text-white mb-2"><i class="bi bi-shield-slash me-2 text-warning"></i>4. Fair Play & Conduct Policy</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            Turf management reserves the unconditional right to suspend accounts or refuse ground entry to patrons engaging in property damage, abusive conduct, or fraudulent double-booking exploits.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <div class="row">
@@ -1003,15 +1554,15 @@
                     <h5 class="footer-title">Links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="javascript:void(0)" onclick="showSection('home')" class="text-decoration-none text-light opacity-75"><i class="bi bi-house-door me-1"></i> Home</a></li>
-                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('about')" class="text-decoration-none text-light opacity-75"><i class="bi bi-info-circle me-1"></i> About</a></li>
-                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('contact')" class="text-decoration-none text-light opacity-75"><i class="bi bi-envelope me-1"></i> Contact</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="showSection('about')" class="text-decoration-none text-light opacity-75"><i class="bi bi-info-circle me-1"></i> About</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="showSection('contact')" class="text-decoration-none text-light opacity-75"><i class="bi bi-envelope me-1"></i> Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">
                     <h5 class="footer-title">Legal</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('privacy')" class="text-decoration-none text-light opacity-75"><i class="bi bi-shield-check me-1"></i> Privacy Policy</a></li>
-                        <li class="mb-2"><a href="javascript:void(0)" onclick="openFooterModal('terms')" class="text-decoration-none text-light opacity-75"><i class="bi bi-file-text me-1"></i> Terms of Service</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="showSection('privacy')" class="text-decoration-none text-light opacity-75"><i class="bi bi-shield-check me-1"></i> Privacy Policy</a></li>
+                        <li class="mb-2"><a href="javascript:void(0)" onclick="showSection('terms')" class="text-decoration-none text-light opacity-75"><i class="bi bi-file-text me-1"></i> Terms of Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -1021,179 +1572,6 @@
         </div>
     </footer>
 
-    <!-- About Modal -->
-    <div class="modal fade" id="aboutModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
-                <div class="modal-header border-bottom border-secondary px-4 py-3">
-                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-info-circle-fill me-2"></i> About TurfMate</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="rounded-circle p-3 me-3 text-center" style="width:60px; height:60px; background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.3);">
-                            <i class="bi bi-trophy-fill fs-3" style="color: var(--primary-color);"></i>
-                        </div>
-                        <div>
-                            <h4 class="fw-bold mb-1">Premier Sports Venue Booking</h4>
-                            <p class="text-muted small mb-0">Empowering athletes and sports enthusiasts to book grounds effortlessly.</p>
-                        </div>
-                    </div>
-
-                    <p class="opacity-80 leading-relaxed mb-4">TurfMate is a next-generation Sports Management System built for seamless discovery and reservation of top-tier football, cricket, tennis, and badminton turfs. Powered by real-time slot scheduling and automated OTP security, we eliminate double-booking friction entirely.</p>
-                    
-                    <div class="row g-3 my-2">
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-4 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                                <i class="bi bi-lightning-charge-fill text-warning fs-3 mb-2"></i>
-                                <h6 class="fw-bold mb-1">Instant Slot Lock</h6>
-                                <p class="small text-muted mb-0">60-second reservation with live schedule syncing.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-4 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                                <i class="bi bi-shield-check text-success fs-3 mb-2"></i>
-                                <h6 class="fw-bold mb-1">Verified Security</h6>
-                                <p class="small text-muted mb-0">Gmail SMTP integration for real verification code delivery.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-4 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                                <i class="bi bi-credit-card-2-front-fill text-info fs-3 mb-2"></i>
-                                <h6 class="fw-bold mb-1">Multi-Payment Support</h6>
-                                <p class="small text-muted mb-0">UPI, QR Code, Card, and Pay-at-Turf options.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-top border-secondary px-4 py-3 d-flex justify-content-between">
-                    <span class="small text-muted">Version 1.0.0 &bull; Spring Boot & MongoDB</span>
-                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Modal -->
-    <div class="modal fade" id="contactModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
-                <div class="modal-header border-bottom border-secondary px-4 py-3">
-                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-headset me-2"></i> Contact & Support</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="text-center mb-4">
-                        <h4 class="fw-bold mb-2">Get in Touch with TurfMate Support</h4>
-                        <p class="text-muted small mb-0">Have questions about venue bookings, ground availability, or admin support? We are available 24/7.</p>
-                    </div>
-
-                    <div class="row g-3 my-2">
-                        <div class="col-md-4">
-                            <div class="p-4 rounded-4 text-center h-100" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 255, 136, 0.2);">
-                                <div class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:56px; height:56px; background: rgba(0,255,136,0.15); color:var(--primary-color);">
-                                    <i class="bi bi-geo-alt-fill fs-4"></i>
-                                </div>
-                                <h6 class="fw-bold mb-2">Headquarters Location</h6>
-                                <p class="small text-muted mb-0 leading-relaxed">Ondipudur, Coimbatore,<br>Tamil Nadu, India - 641016</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="p-4 rounded-4 text-center h-100" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 255, 136, 0.2);">
-                                <div class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:56px; height:56px; background: rgba(0,255,136,0.15); color:var(--primary-color);">
-                                    <i class="bi bi-telephone-fill fs-4"></i>
-                                </div>
-                                <h6 class="fw-bold mb-2">Helpline Support</h6>
-                                <p class="small text-muted mb-1">Direct Call & WhatsApp:</p>
-                                <div class="fw-bold text-white fs-6">+91 79049 77500</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="p-4 rounded-4 text-center h-100" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 255, 136, 0.2);">
-                                <div class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:56px; height:56px; background: rgba(0,255,136,0.15); color:var(--primary-color);">
-                                    <i class="bi bi-envelope-check-fill fs-4"></i>
-                                </div>
-                                <h6 class="fw-bold mb-2">Official Email</h6>
-                                <p class="small text-muted mb-1">Admin & Support Inquiry:</p>
-                                <div class="fw-bold text-white small" style="word-break: break-all;">mathanadmin@gmail.com</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-top border-secondary px-4 py-3">
-                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Privacy Policy Modal -->
-    <div class="modal fade" id="privacyModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
-                <div class="modal-header border-bottom border-secondary px-4 py-3">
-                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-shield-check me-2"></i> Privacy Policy</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" style="max-height: 450px; overflow-y: auto;">
-                    <div class="p-3 mb-4 rounded-3" style="background: rgba(0,255,136,0.08); border-left: 4px solid var(--primary-color);">
-                        <div class="fw-bold mb-1"><i class="bi bi-lock-fill me-1"></i> Your Privacy Rights</div>
-                        <div class="small text-muted">We respect your data privacy and ensure industry-standard encryption for all transactions.</div>
-                    </div>
-
-                    <h5 class="fw-bold mb-2">1. Information We Collect</h5>
-                    <p class="small text-muted mb-3 leading-relaxed">When registering or reserving a slot on TurfMate, we collect your username, email address, and booking details. Passwords are stored securely in database format.</p>
-
-                    <h5 class="fw-bold mb-2">2. Data Usage & Security</h5>
-                    <p class="small text-muted mb-3 leading-relaxed">Your email is strictly used for 6-digit OTP verification codes and booking confirmations. We never sell or share user data with third-party advertisers.</p>
-
-                    <h5 class="fw-bold mb-2">3. Payment Privacy</h5>
-                    <p class="small text-muted mb-3 leading-relaxed">All payment transactions (UPI, QR Code, Card) are transmitted over TLS 1.3 encrypted connections. Financial credentials like UPI PINs are never stored on our servers.</p>
-
-                    <h5 class="fw-bold mb-2">4. Managing Your Data</h5>
-                    <p class="small text-muted mb-0 leading-relaxed">You can inspect your complete booking history anytime under "My Bookings" or contact mathanadmin@gmail.com for data removal requests.</p>
-                </div>
-                <div class="modal-footer border-top border-secondary px-4 py-3">
-                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Terms of Service Modal -->
-    <div class="modal fade" id="termsModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="background: linear-gradient(145deg, rgba(18, 22, 41, 0.98), rgba(26, 32, 59, 0.98)); color: #fff; border: 1px solid rgba(0, 255, 136, 0.25); box-shadow: 0 16px 48px rgba(0,0,0,0.6); border-radius: 20px;">
-                <div class="modal-header border-bottom border-secondary px-4 py-3">
-                    <h5 class="modal-title fw-bold" style="color: var(--primary-color);"><i class="bi bi-file-text-fill me-2"></i> Terms of Service</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" style="max-height: 450px; overflow-y: auto;">
-                    <div class="p-3 mb-4 rounded-3" style="background: rgba(255,193,7,0.08); border-left: 4px solid #ffc107;">
-                        <div class="fw-bold mb-1" style="color: #ffc107;"><i class="bi bi-exclamation-triangle-fill me-1"></i> Venue Rules & Conduct</div>
-                        <div class="small text-muted">All players must adhere to venue guidelines and footwear requirements during their booked slots.</div>
-                    </div>
-
-                    <h5 class="fw-bold mb-2">1. Slot Reservation & Timings</h5>
-                    <p class="small text-muted mb-3 leading-relaxed">Bookings are valid strictly for the 1-hour slot and date selected. Players are advised to arrive 10 minutes prior to slot start time.</p>
-
-                    <h5 class="fw-bold mb-2">2. Footwear & Turf Maintenance</h5>
-                    <p class="small text-muted mb-3 leading-relaxed">Players must wear non-marking sports shoes or turf sneakers. Metal studs, cleats, food, and drinks are strictly prohibited on synthetic grass surfaces.</p>
-
-                    <h5 class="fw-bold mb-2">3. Cancellation & Refund Policy</h5>
-                    <p class="small text-muted mb-3 leading-relaxed">Cancellations requested at least 2 hours prior to the slot start time qualify for a full refund or slot rescheduling. Late cancellations are non-refundable.</p>
-
-                    <h5 class="fw-bold mb-2">4. Account Responsibilities</h5>
-                    <p class="small text-muted mb-0 leading-relaxed">TurfMate reserves the right to suspend accounts engaged in fraudulent activity, double-booking exploitation, or property damage.</p>
-                </div>
-                <div class="modal-footer border-top border-secondary px-4 py-3">
-                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Booking Modal -->
     <div class="modal fade" id="bookingModal" tabindex="-1">
@@ -1461,6 +1839,82 @@
             showSection(path, false);
         });
 
+        const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200';
+
+        function handleProfilePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select a valid image file.', 'danger');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                showToast('Image size should be less than 2MB.', 'warning');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const photoDataUrl = e.target.result;
+                const stored = JSON.parse(localStorage.getItem('user')) || {};
+                const user = stored.user || stored;
+
+                if (user && user.id) {
+                    localStorage.setItem('profilePhoto_' + user.id, photoDataUrl);
+                } else {
+                    localStorage.setItem('profilePhoto_guest', photoDataUrl);
+                }
+
+                updateProfilePhotoDisplay();
+                showToast('Profile photo updated successfully! 📸', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeProfilePhoto() {
+            const stored = JSON.parse(localStorage.getItem('user')) || {};
+            const user = stored.user || stored;
+
+            if (user && user.id) {
+                localStorage.removeItem('profilePhoto_' + user.id);
+            } else {
+                localStorage.removeItem('profilePhoto_guest');
+            }
+
+            const input = document.getElementById('profile-photo-input');
+            if (input) input.value = '';
+
+            updateProfilePhotoDisplay();
+            showToast('Profile photo removed.', 'info');
+        }
+
+        function updateProfilePhotoDisplay() {
+            const stored = JSON.parse(localStorage.getItem('user')) || {};
+            const user = stored.user || stored;
+            const photoKey = (user && user.id) ? ('profilePhoto_' + user.id) : 'profilePhoto_guest';
+            const savedPhoto = localStorage.getItem(photoKey);
+
+            const avatarImg = document.getElementById('profile-avatar-img');
+            const removeBtn = document.getElementById('remove-photo-btn');
+
+            if (avatarImg) {
+                avatarImg.src = savedPhoto || DEFAULT_AVATAR;
+            }
+            if (removeBtn) {
+                removeBtn.style.display = savedPhoto ? 'inline-block' : 'none';
+            }
+
+            const navProfileLink = document.querySelector('#nav-profile a');
+            if (navProfileLink && user && user.id) {
+                const photoSrc = savedPhoto || DEFAULT_AVATAR;
+                navProfileLink.innerHTML = `<img src="${photoSrc}" class="nav-avatar-img" alt="avatar"> My Bookings`;
+            } else if (navProfileLink) {
+                navProfileLink.innerHTML = `My Bookings`;
+            }
+        }
+
         function updateNavbar() {
             const stored = JSON.parse(localStorage.getItem('user'));
             const user = stored ? (stored.user || stored) : null;
@@ -1473,6 +1927,7 @@
                 
                 const isAdmin = stored.isAdmin || (stored.user && stored.user.isAdmin);
                 document.getElementById('nav-admin').style.display = isAdmin ? 'block' : 'none';
+                updateProfilePhotoDisplay();
             } else {
                 document.getElementById('nav-login').style.display = 'block';
                 document.getElementById('nav-logout').style.display = 'none';
@@ -2059,26 +2514,6 @@
                 showToast('Connection error. Please try again.', 'danger');
             }
         };
-
-        function openFooterModal(type) {
-            const modalId = type + 'Modal';
-            const modalEl = document.getElementById(modalId);
-            if (modalEl) {
-                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                modal.show();
-            }
-        }
-
-        function handleContactSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('contact-name').value;
-            showToast(`Thank you ${name}! Your message has been sent to our support team.`, 'success');
-            const modalEl = document.getElementById('contactModal');
-            if (modalEl) {
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-            }
-        }
 
         // Reset payment modal when it's closed
         document.getElementById('paymentModal').addEventListener('hidden.bs.modal', function () {

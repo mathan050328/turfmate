@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface BookingRepository extends MongoRepository<Booking, String> {
     List<Booking> findByTurfIdAndStartTimeBetween(String turfId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findByTurfId(String turfId);
     List<Booking> findByUserId(String userId);
 }

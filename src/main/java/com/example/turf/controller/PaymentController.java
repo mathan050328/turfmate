@@ -7,6 +7,7 @@ import com.example.turf.model.User;
 import com.example.turf.repository.BookingRepository;
 import com.example.turf.repository.TurfRepository;
 import com.example.turf.repository.UserRepository;
+import com.example.turf.service.BookingService;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -22,13 +23,6 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * REST Controller for Payment Processing and Checkout Session Management.
- * 
- * Supports both Stripe Checkout integration and simulated Mock Gateway (UPI / Pay at Venue).
- * 
- * Endpoint Base: /api/payment
- */
 @RestController
 @RequestMapping("/api/payment")
 @CrossOrigin(origins = "*")
@@ -38,7 +32,7 @@ public class PaymentController {
     private final BookingRepository bookingRepository;
     private final TurfRepository turfRepository;
     private final UserRepository userRepository;
-    private final com.example.turf.service.BookingService bookingService;
+    private final BookingService bookingService;
 
     @Value("${stripe.api.key}")
     private String stripeApiKey;
@@ -48,9 +42,6 @@ public class PaymentController {
         Stripe.apiKey = stripeApiKey;
     }
 
-    /**
-     * POST /api/payment/create-checkout-session - Stripe Checkout Session Initialization
-     */
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createCheckoutSession(@RequestBody PaymentRequest request) {
         try {
@@ -102,7 +93,7 @@ public class PaymentController {
                                             .build())
                                     .build())
                             .build())
-                    .putMetadata("bookingId", booking.getId().toString())
+                    .putMetadata("bookingId", booking.getId())
                     .build();
 
             Session session = Session.create(params);
@@ -123,10 +114,6 @@ public class PaymentController {
         }
     }
 
-    /**
-     * POST /api/payment/mock-pay - Simulated Instant Payment Gateway (UPI / QR Code / Cash)
-     * Validates slot availability, saves booking as CONFIRMED and PAID, and returns receipt metadata.
-     */
     @PostMapping("/mock-pay")
     public ResponseEntity<Map<String, Object>> mockPay(@RequestBody PaymentRequest request) {
         Map<String, Object> response = new HashMap<>();
@@ -177,9 +164,6 @@ public class PaymentController {
         }
     }
 
-    /**
-     * GET /api/payment/success - Webhook / Success Callback Handler
-     */
     @GetMapping("/success")
     public ResponseEntity<String> confirmBooking(@RequestParam String bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
